@@ -1,3 +1,74 @@
+/**
+ * luigi-template.js
+ * =================
+ *
+ * Links
+ * -----
+ * * Contact: Paul Duncan (<pabs@pablotron.org>)
+ * * Home Page: <http://pablotron.org/luigi-template/>
+ * * Mercurial Repository: <http://hg.pablotron.org/luigi-template/>
+ *
+ * Overview
+ * --------
+ * Tiny client-side JavaScript templating library.
+ *
+ * Why?  This script is:
+ *
+ *   * less than 3k minified (see `forced-timeout.min.js`),
+ *
+ *   * has no external dependencies (no jQuery/YUI/Sensha),
+ *
+ *   * works in browsers as old as IE8, and
+ *
+ *   * MIT licensed (use for whatever, I don't care)
+ *
+ * Usage
+ * -----
+ * TODO
+ *
+ * Configuration Options
+ * ---------------------
+ * TODO
+ *
+ * TODO
+ * ----
+ * * Add support for LuigiTemplate.compile (and constructor compile)
+ * * Add support for `<meta id='x-luigi-template-compile'/>`
+ *
+ * License
+ * -------
+ * Copyright (c) 2014 Paul Duncan <pabs@pablotron.org>
+ *
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *   * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *
+ *   * Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
+ *
+ *   * The names of contributors may not be used to endorse or promote
+ *     products derived from this software without specific prior written
+ *     permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
 LuigiTemplate = (function() {
   "use strict";
 
@@ -194,3 +265,39 @@ LuigiTemplate = (function() {
   // expose interface
   return T;
 }());
+
+/*
+You automagically generate the following files:
+
+  * luigi-template.min.js (minified luigi-template.js),
+  * readme.txt (Markdown-formatted documentation), and
+  * readme.html (HTML-formatted documentation)
+
+by using this command:
+
+  grep ^build: luigi-template.js | sed 's/^build://' | ruby
+
+(Requires jsmin, ruby, and markdown).
+
+build: # generate readme.txt
+build: File.write('readme.txt', File.read('luigi-template.js').match(%r{
+build:   # match first opening comment
+build:   ^/\*\*(.*?)\* /
+build:
+build:   # match text
+build:   (.*?)
+build:
+build:   # match first closing comment
+build:   # (note: don't change " /" to "/" or else)
+build:   \* /
+build: }mx)[1].split(/\n/).map { |line|
+build:   # strip leading asterisks
+build:   line.gsub(/^ \* ?/, '')
+build: }.join("\n").strip)
+build:
+build: # generate readme.html
+build: `markdown < readme.txt > readme.html`
+build:
+build: # make luigi-template.min.js
+build: `jsmin < luigi-template.js > luigi-template.min.js`
+*/
