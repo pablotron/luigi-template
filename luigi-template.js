@@ -113,7 +113,7 @@ LuigiTemplate = (function() {
         if (v === undefined || v === null)
           return '';
 
-        return (v || '').replace(/(['"<>&])/g, function(s) {
+        return v.toString().replace(/(['"<>&])/g, function(s) {
           return LUT[s];
         });
       };
