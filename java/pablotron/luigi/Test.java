@@ -2,6 +2,7 @@ package pablotron.luigi;
 
 import java.util.Map;
 import java.util.HashMap;
+
 import pablotron.luigi.LuigiError;
 import pablotron.luigi.Filter;
 import pablotron.luigi.Template;
@@ -27,12 +28,14 @@ public final class Test {
 
   // custom filters
   private static final Map<String, Filter.Handler> filters = new HashMap<String, Filter.Handler>() {{
+    // add custom filter
     put("custom", new Filter.Handler() {
       public String filter(String val, String args[], Map<String, String> row) {
         return "custom";
       }
     });
 
+    // add custom filter with argument
     put("custom_with_arg", new Filter.Handler() {
       public String filter(String val, String args[], Map<String, String> row) {
         return (args.length > 0) ? args[0] : "custom";
@@ -40,7 +43,7 @@ public final class Test {
     });
   }};
 
-  public static void main(String cli_args[]) throws Exception {
+  public static void main(String params[]) throws Exception {
     // add custom filters
     Filter.FILTERS.putAll(filters);
 
