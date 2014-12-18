@@ -76,10 +76,6 @@ LuigiTemplate = (function() {
 
   // list of built-in filters
   var FILTERS = {
-    hash: function(v, args) {
-      return 'hash(' + v + ')';
-    },
-
     uc: function(v) {
       return v.toUpperCase();
     },
