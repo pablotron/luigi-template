@@ -25,21 +25,21 @@ var template_str = [
   "%{greet}, %{name}!",
 
   // test filters and filters with parameters
-  "Your name hashes to: %{name|hash(sha1)|uc}",
+  "Your name uppercase is: %{name|uc}",
 
   // test custom filter
   "Your custom filtered name is: %{name|custom}",
 
   // test custom filter with arguments
-  "Your custom_args name is: %{name|custom_args(foo,bar,baz)}",
+  "Your custom_args name is: %{name|custom_args foo bar baz}",
 
   // test whitespace in filters
-  "random test: %{name | hash( sha512 ) | uc }",
+  "random test: %{name | lc }",
 
   // test pluralize filter
-  'pluralize test (0): %{count_0} %{count_0 | pluralize(item)}',
-  'pluralize test (1): %{count_1} %{count_1 | pluralize(item)}',
-  'pluralize test (10): %{count_10} %{count_10 | pluralize(item)}',
+  'pluralize test (0): %{count_0} item%{count_0 | s}',
+  'pluralize test (1): %{count_1} item%{count_1 | s}',
+  'pluralize test (10): %{count_10} item%{count_10 | s}',
 
   // terminating newline
   ''

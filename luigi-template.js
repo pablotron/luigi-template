@@ -116,9 +116,7 @@ LuigiTemplate = (function() {
         return a.reduce(fn, iv);
       };
     } else {
-      return function(a, fn, iv) {
-        var r = iv;
-
+      return function(a, fn, r) {
         each(a, function(v, i) {
           r = fn(r, v, i, a);
         });
@@ -132,7 +130,7 @@ LuigiTemplate = (function() {
   var trim = (function() {
     if (String.prototype.trim) {
       return function(s) {
-        return s.trim();
+        return (s || '').trim();
       };
     } else {
       var re = /^\s+|\s+$/g;
@@ -197,8 +195,8 @@ LuigiTemplate = (function() {
   };
 
   var RES = {
-    actions:  /%\{\s*([^\s\|\}]+)\s*((\s*\|(\s*[^\s\|\}]+)+)*)\s*\}|([^%]|%)/g,
-    filter:   /(\S+)((\s*\S+)*)\s*/g,
+    actions: /%\{\s*([^\s\|\}]+)\s*((\s*\|(\s*[^\s\|\}]+)+)*)\s*\}|([^%]+|%)/g,
+    filter:   /(\S+)((\s*\S+)*)\s*/,
     delim_filters: /\s*\|\s*/,
     delim_args:    /\s+/
   };
@@ -237,9 +235,11 @@ LuigiTemplate = (function() {
       if (!m)
         throw new Error('invalid filter: ' + f);
 
+      var as = trim(m[2]);
+
       r.push({
         name: m[1],
-        args: trim(m[2]).split(RES.delim_args)
+        args: as.length ? as.split(RES.delim_args) : []
       });
     });
 
@@ -255,13 +255,22 @@ LuigiTemplate = (function() {
   function run(o) {
     var i, l, f, fs, me = this;
 
-    return map(this.actions, function(row) {
-      if (!row.key in o)
-        throw new Error('missing key: ' + row.key)
+    print(JSON.stringify(this.actions));
 
-      return reduce(row.filters, function(r, f) {
-        return FILTERS[f.name](r, f.args, o, this);
-      }, o[row.key]);
+    return map(this.actions, function(row) {
+      if (row.type == 'text') {
+        return row.text;
+      } else if (row.type == 'action') {
+        if (!row.key in o)
+          throw new Error('missing key: ' + row.key)
+
+        return reduce(row.filters, function(r, f) {
+          return FILTERS[f.name](r, f.args, o, this);
+        }, o[row.key]);
+      } else {
+        /* never reached */
+        throw new Error('BUG: invalid type: ' + row.type);
+      }
     }).join('');
   }
 
