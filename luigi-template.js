@@ -125,7 +125,6 @@ LuigiTemplate = (function() {
   function init(s, o) {
     this.s = s;
     this.o = o;
-    this.filters = (o && 'filters' in o) ? o.filters : {};
   };
 
   function safe_trim(s) {
@@ -152,9 +151,8 @@ LuigiTemplate = (function() {
     return r;
   }
 
-  function get_filter(k, me) {
-    var r = me.filters[k] || FILTERS[k];
-
+  function get_filter(k) {
+    var r = FILTERS[k];
     if (!r)
       throw new Error("unknown filter: " + k);
 
