@@ -128,6 +128,21 @@ LuigiTemplate = (function() {
     }
   })();
 
+  // String.trim polyfill
+  var trim = (function() {
+    if (String.prototype.trim) {
+      return function(s) {
+        return s.trim();
+      };
+    } else {
+      var re = /^\s+|\s+$/g;
+
+      return function(s) {
+        (s || '').replace(re, '');
+      };
+    }
+  })();
+
   // String.scan polyfill
   function scan(s, re, fn) {
     var m;
@@ -158,7 +173,7 @@ LuigiTemplate = (function() {
     },
 
     trim: function(v) {
-      return (v || '').replace(/^\s+|\s+$/g, '');
+      return trim(v);
     },
 
     h: (function() {
@@ -188,8 +203,7 @@ LuigiTemplate = (function() {
     delim_args:    /\s+/,
 
     run:    /%\{\s*(\w+)((\s*\|\s*\w+\s*(\([\w\s,-]+\))?)*)\}/g,
-    old_filter: /(\w+)\s*(\(([\w\s,-]+)\))?/,
-    trim:   /^\s+|\s+$/
+    old_filter: /(\w+)\s*(\(([\w\s,-]+)\))?/
   };
 
   function parse_template(s) {
@@ -218,7 +232,7 @@ LuigiTemplate = (function() {
     var r = [];
 
     each(filters.split(RES.delim_filters), function(f) {
-      f = f.trim();
+      f = trim(f);
       if (!f)
         return;
 
@@ -228,7 +242,7 @@ LuigiTemplate = (function() {
 
       r.push({
         name: m[1],
-        args: FILTERS.trim(md[2] || '').split(RES.delim_args)
+        args: trim(md[2]).split(RES.delim_args)
       });
     });
 
