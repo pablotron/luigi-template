@@ -238,9 +238,8 @@ LuigiTemplate = (function() {
     return r;
   }
 
-  function init(s, o) {
+  function init(s) {
     this.s = s;
-    this.o = o;
     this.actions = parse_template(s);
   };
 
