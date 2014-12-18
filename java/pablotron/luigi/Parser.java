@@ -87,6 +87,8 @@ public final class Parser {
     return r.toArray(new Action[r.size()]);
   }
 
+  private static final String[] NO_ARGS = {};
+
   public static FilterReference[] parse_filters(
     String filters_str
   ) throws LuigiError {
@@ -104,8 +106,14 @@ public final class Parser {
       if (!m.find())
         throw new LuigiError("invalid filter: " + f);
 
+      // get arguments string
+      String args = m.group(2).trim();
+
       // append new filter reference to result
-      r.add(new FilterReference(m.group(1), RE_DELIM_ARGS.split(m.group(2).trim())));
+      r.add(new FilterReference(
+        m.group(1),
+        (args.length() > 0) ? RE_DELIM_ARGS.split(args) : NO_ARGS
+      ));
     }
 
     // return result
