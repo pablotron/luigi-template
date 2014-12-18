@@ -241,61 +241,17 @@ LuigiTemplate = (function() {
     this.actions = parse_template(s);
   };
 
-  function safe_trim(s) {
-    return ((s !== undefined) ? s : '').replace(RES.trim, '');
-  }
-
-  // given a filter string, return a list of filters
-  function make_filter_list(s) {
-    var i, l, a, md, r = [], fs = s.split(/\s*\|\s*/);
-
-    if (s.length > 0 && fs.length > 0) {
-      for (i = 1, l = fs.length; i < l; i++) {
-        if (md = fs[i].match(RES.filter)) {
-          r.push({
-            k: md[1],
-            a: safe_trim(md[3]).split(/\s*,\s*/)
-          });
-        } else {
-          throw new Error("invalid filter string: " + fs[i]);
-        }
-      }
-    }
-
-    return r;
-  }
-
-  function get_filter(k) {
-    var r = FILTERS[k];
-    if (!r)
-      throw new Error("unknown filter: " + k);
-
-    return r;
-  }
-
   function run(o) {
     var i, l, f, fs, me = this;
 
-    // TODO: add compiled support here
+    return map(this.actions, function(row) {
+      if (!row.key in o)
+        throw new Error('missing key: ' + row.key)
 
-    return this.s.replace(RES.run, function(m, k, filters) {
-      var r = o[k];
-
-      // build filter list
-      fs = make_filter_list(filters);
-
-      // iterate over and apply each filter
-      for (i = 0, l = fs.length; i < l; i++) {
-        // get/check filter
-        f = get_filter(fs[i].k, me);
-
-        // apply filter
-        r = f(r, fs[i].a, o, this);
-      }
-
-      // return result
-      return r;
-    });
+      return reduce(row.filters, function(r, f) {
+        return FILTERS[f.name](r, f.args, o, this);
+      }, o[row.key]);
+    }).join('');
   }
 
   function get_inline_template(key) {
