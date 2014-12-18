@@ -200,10 +200,7 @@ LuigiTemplate = (function() {
     actions:  /%\{\s*([^\s\|\}]+)\s*((\s*\|(\s*[^\s\|\}]+)+)*)\s*\}|([^%]|%)/g,
     filter:   /(\S+)((\s*\S+)*)\s*/g,
     delim_filters: /\s*\|\s*/,
-    delim_args:    /\s+/,
-
-    run:    /%\{\s*(\w+)((\s*\|\s*\w+\s*(\([\w\s,-]+\))?)*)\}/g,
-    old_filter: /(\w+)\s*(\(([\w\s,-]+)\))?/
+    delim_args:    /\s+/
   };
 
   function parse_template(s) {
