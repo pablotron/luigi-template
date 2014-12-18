@@ -239,7 +239,7 @@ LuigiTemplate = (function() {
 
       r.push({
         name: m[1],
-        args: trim(md[2]).split(RES.delim_args)
+        args: trim(m[2]).split(RES.delim_args)
       });
     });
 
