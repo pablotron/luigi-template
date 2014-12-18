@@ -206,6 +206,7 @@ LuigiTemplate = (function() {
 
     scan(s, RES.actions, function(m) {
       if (m[1]) {
+        // action
         r.push({
           type: 'action',
           key: m[1],
@@ -255,7 +256,8 @@ LuigiTemplate = (function() {
   function run(o) {
     var i, l, f, fs, me = this;
 
-    print(JSON.stringify(this.actions));
+    // debug
+    // print(JSON.stringify(this.actions));
 
     return map(this.actions, function(row) {
       if (row.type == 'text') {
