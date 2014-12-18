@@ -77,11 +77,11 @@ LuigiTemplate = (function() {
   // list of built-in filters
   var FILTERS = {
     uc: function(v) {
-      return v.toUpperCase();
+      return (v || '').toUpperCase();
     },
 
     lc: function(v) {
-      return v.toLowerCase();
+      return (v || '').toLowerCase();
     },
 
     pluralize: function(v) {
@@ -89,7 +89,7 @@ LuigiTemplate = (function() {
     },
 
     length: function(v) {
-      return v.length;
+      return (v || '').length;
     },
 
     trim: function(v) {
