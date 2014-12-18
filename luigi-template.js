@@ -116,11 +116,8 @@ LuigiTemplate = (function() {
     if (!re.global)
       throw 'non-global regex';
 
-      while (m = re.exec(s)) {
-        m.shift();
-        fn(m);
-      }
-    };
+    while ((m = re.exec(s)) !== null)
+      fn(m);
   }
 
   // list of built-in filters
@@ -166,14 +163,63 @@ LuigiTemplate = (function() {
   };
 
   var RES = {
+    actions:  /%\{\s*([^\s\|\}]+)\s*((\s*\|(\s*[^\s\|\}]+)+)*)\s*\}|([^%]|%)/g,
+    filter:   /(\S+)((\s*\S+)*)\s*/g,
+    delim_filters: /\s*\|\s*/,
+    delim_args:    /\s+/,
+
     run:    /%\{\s*(\w+)((\s*\|\s*\w+\s*(\([\w\s,-]+\))?)*)\}/g,
-    filter: /(\w+)\s*(\(([\w\s,-]+)\))?/,
+    old_filter: /(\w+)\s*(\(([\w\s,-]+)\))?/,
     trim:   /^\s+|\s+$/
   };
+
+  function parse_template(s) {
+    var r = [];
+
+    scan(s, RES.actions, function(m) {
+      if (m[1]) {
+        r.push({
+          type: 'action',
+          key: m[1],
+          filters: parse_filters(m[2])
+        });
+      } else {
+        // text
+        r.push({
+          type: 'text',
+          text: m[5]
+        });
+      }
+    });
+
+    return r;
+  }
+
+  function parse_filters(filters) {
+    var r = [];
+
+    each(filters.split(RES.delim_filters), function(f) {
+      f = f.trim();
+      if (!f)
+        return;
+
+      var m = f.match(RES.filter);
+      if (!m)
+        throw new Error('invalid filter: ' + f);
+
+      r.push({
+        name: m[1],
+        args: FILTERS.trim(md[2] || '').split(RES.delim_args)
+      });
+    });
+
+    return r;
+  }
 
   function init(s, o) {
     this.s = s;
     this.o = o;
+    this.actions = parse_template(s);
   };
 
   function safe_trim(s) {
