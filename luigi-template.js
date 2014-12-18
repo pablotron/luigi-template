@@ -26,15 +26,6 @@
  * -----
  * TODO
  *
- * Configuration Options
- * ---------------------
- * TODO
- *
- * TODO
- * ----
- * * Add support for LuigiTemplate.compile (and constructor compile)
- * * Add support for `<meta id='x-luigi-template-compile'/>`
- *
  * License
  * -------
  * Copyright (c) 2014 Paul Duncan <pabs@pablotron.org>
