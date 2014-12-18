@@ -84,8 +84,8 @@ LuigiTemplate = (function() {
       return (v || '').toLowerCase();
     },
 
-    pluralize: function(v) {
-      return v + 's';
+    s: function(v) {
+      return (v == 1) ? '' : 's';
     },
 
     length: function(v) {
