@@ -109,6 +109,25 @@ LuigiTemplate = (function() {
     }
   })();
 
+  // Array.reduce polyfill
+  var reduce = (function() {
+    if (Array.prototype.reduce) {
+      return function(a, fn, iv) {
+        return a.reduce(fn, iv);
+      };
+    } else {
+      return function(a, fn, iv) {
+        var r = iv;
+
+        each(a, function(v, i) {
+          r = fn(r, v, i, a);
+        });
+
+        return r;
+      };
+    }
+  })();
+
   // String.scan polyfill
   function scan(s, re, fn) {
     var m;
