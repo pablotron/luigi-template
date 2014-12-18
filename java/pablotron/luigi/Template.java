@@ -26,8 +26,8 @@ public final class Template {
     this(template, Filter.FILTERS);
   }
 
-  public String run(Map<String, String> args) throws LuigiError {
-    StringBuilder r = new StringBuilder();
+  public String run(final Map<String, String> args) throws LuigiError {
+    final StringBuilder r = new StringBuilder();
 
     for (Action a: this.actions)
       r.append(a.run(this.filters, args));

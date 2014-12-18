@@ -63,16 +63,16 @@ public final class Parser {
   );
 
   public static Action[] parse_template(
-    String template
+    final String template
   ) throws LuigiError {
-    ArrayList<Action> r = new ArrayList<Action>();
+    final ArrayList<Action> r = new ArrayList<Action>();
 
     // match on text
     final Matcher m = RE_ACTION.matcher(template);
 
     while (m.find()) {
       // String key = m.group("key");
-      String key = m.group(1);
+      final String key = m.group(1);
       
       if (key != null && key.length() > 0) {
         // r.add(new FilterAction(key, parse_filters(m.group("filters"))));
@@ -90,9 +90,9 @@ public final class Parser {
   private static final String[] NO_ARGS = {};
 
   public static FilterReference[] parse_filters(
-    String filters_str
+    final String filters_str
   ) throws LuigiError {
-    ArrayList<FilterReference> r = new ArrayList<FilterReference>();
+    final ArrayList<FilterReference> r = new ArrayList<FilterReference>();
 
     // split string into individual filters and handle each one
     for (String f: RE_DELIM_FILTERS.split(filters_str)) {
@@ -102,12 +102,12 @@ public final class Parser {
         continue;
 
       // match on filter and check for error
-      Matcher m = RE_FILTER.matcher(f);
+      final Matcher m = RE_FILTER.matcher(f);
       if (!m.find())
         throw new LuigiError("invalid filter: " + f);
 
       // get arguments string
-      String args = m.group(2).trim();
+      final String args = m.group(2).trim();
 
       // append new filter reference to result
       r.add(new FilterReference(
