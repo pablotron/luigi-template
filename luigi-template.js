@@ -169,7 +169,7 @@ LuigiTemplate = (function() {
         '<': '&lt;',
         '&': '&amp;'
       };
-      
+    
       return function(v) {
         if (v === undefined || v === null)
           return '';
@@ -304,7 +304,7 @@ LuigiTemplate = (function() {
   T.DOMCache = function() {
     this.cache = {};
   };
-  
+
   // domcache run method
   T.DOMCache.prototype.run = function(key, args) {
     if (!(key in this.cache))
