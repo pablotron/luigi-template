@@ -14,7 +14,7 @@
  *
  * Why?  This script is:
  *
- *   * less than 3k minified (see `luigi-template.min.js`),
+ *   * less than 4k minified (see `luigi-template.min.js`),
  *
  *   * has no external dependencies (no jQuery/YUI/Sensha),
  *
