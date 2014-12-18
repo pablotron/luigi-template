@@ -74,6 +74,55 @@ LuigiTemplate = (function() {
 
   var VERSION = '0.4.0';
 
+  // Array.each polyfill
+  var each = (function() {
+    if (Array.prototype.forEach) {
+      return function(a, fn) {
+        a.forEach(fn);
+      };
+    } else {
+      return function(a, fn) {
+        var i, l;
+
+        for (i = 0, l = a.length; i < l; i++)
+          fn(a[i], i, a);
+      };
+    }
+  })();
+
+  // Array.map polyfill
+  var map = (function() {
+    if (Array.prototype.map) {
+      return function(a, fn) {
+        return a.map(fn);
+      };
+    } else {
+      return function(a, fn) {
+        var r = new Array(a.length);
+
+        each(a, function(v, i) {
+          r[i] = v;
+        });
+
+        return r;
+      };
+    }
+  })();
+
+  // String.scan polyfill
+  function scan(s, re, fn) {
+    var m;
+
+    if (!re.global)
+      throw 'non-global regex';
+
+      while (m = re.exec(s)) {
+        m.shift();
+        fn(m);
+      }
+    };
+  }
+
   // list of built-in filters
   var FILTERS = {
     uc: function(v) {
@@ -93,7 +142,7 @@ LuigiTemplate = (function() {
     },
 
     trim: function(v) {
-      return (v || '').replace(/^\s+|\s+$/mg, '');
+      return (v || '').replace(/^\s+|\s+$/g, '');
     },
 
     h: (function() {
