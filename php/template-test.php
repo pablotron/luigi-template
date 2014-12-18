@@ -2,7 +2,7 @@
 
 error_reporting(E_ALL | E_STRICT);
 
-require 'template.php';
+require 'luigi-template.php';
 
 # build template string
 $template_str = join("\n", array(
