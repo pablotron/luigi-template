@@ -105,7 +105,7 @@ public final class Parser {
         throw new LuigiError("invalid filter: " + f);
 
       // append new filter reference to result
-      r.add(new FilterReference(m.group(1), RE_DELIM_ARGS.split(m.group(2))));
+      r.add(new FilterReference(m.group(1), RE_DELIM_ARGS.split(m.group(2).trim())));
     }
 
     // return result
