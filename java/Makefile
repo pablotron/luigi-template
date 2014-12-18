@@ -10,5 +10,5 @@ $(OUT): all
 jar: $(OUT)
 
 clean:
-	find . -type f -name \*.class -exec rm -vf '{}' ';'
-	rm -vf $(OUT)
+	find . -type f -name \*.class -exec rm -f '{}' ';'
+	rm -f $(OUT)
