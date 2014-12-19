@@ -199,11 +199,11 @@ final class Parser {
 };
 
 final class Template {
-  private $template, $actions, $o;
+  private $template, $filters, $actions
 
-  public function __construct($template, array $o = array()) {
+  public function __construct($template, $filters = null) {
     $this->template = $template;
-    $this->o = $o;
+    $this->filters = $filters;
 
     # parse template into list of actions
     $this->actions = Parser::parse_template($template);
@@ -227,7 +227,7 @@ final class Template {
         # pass value through filters and return result
         return array_reduce($row['filters'], function($r, $f) use ($me, $args) {
           # get filter
-          $fn = Filters::get($f['name']);
+          $fn = $me->get_filter($f['name']);
         
           # call filter and return result
           return call_user_func($fn, $r, $f['args'], $args, $me);
@@ -239,17 +239,28 @@ final class Template {
     }, $this->actions));
   }
 
-  public static function run_once($str, array $args = array()) {
-    $t = new Template($str);
+  public function get_filter($key) {
+    if ($this->filters) {
+      # use custom filters
+      return $this->filters->get($key);
+    } else {
+      # default to built-in filters
+      return Filters::get($key);
+    }
+  }
+
+  public static function run_once($str, $args = array(), $filters = null) {
+    $t = new Template($str, $filters);
     return $t->run($args);
   }
 };
 
 final class Cache {
-  private $templates, $o, $lut = array();
+  private $templates, $filters, $lut = array();
 
-  public function __construct(array $templates, array $o = array()) {
+  public function __construct(array $templates, $filters = null) {
     $this->templates = $templates;
+    $this->filters = $filters;
     $this->o = $o;
   }
 
@@ -259,7 +270,7 @@ final class Cache {
         throw new Error("unknown template: $key");
 
       # lazy-load template
-      $this->lut[$key] = new Template($this->templates[$key], $this->o);
+      $this->lut[$key] = new Template($this->templates[$key], $this->filters);
     }
 
     # return result
