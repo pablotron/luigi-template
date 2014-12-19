@@ -238,8 +238,9 @@ LuigiTemplate = (function() {
     return r;
   }
 
-  function init(s) {
+  function init(s, filters) {
     this.s = s;
+    this.filters = filters || FILTERS;
     this.actions = parse_template(s);
   };
 
@@ -257,7 +258,7 @@ LuigiTemplate = (function() {
           throw new Error('missing key: ' + row.key)
 
         return reduce(row.filters, function(r, f) {
-          return FILTERS[f.name](r, f.args, o, this);
+          return this.filters[f.name](r, f.args, o, this);
         }, o[row.key]);
       } else {
         /* never reached */
@@ -334,8 +335,8 @@ LuigiTemplate = (function() {
   T.VERSION = VERSION;
 
   // add singleton run
-  T.run = function(s, o) {
-    return new T(s).run(o);
+  T.run = function(s, o, f) {
+    return new T(s, f).run(o);
   }
 
   // expose interface
