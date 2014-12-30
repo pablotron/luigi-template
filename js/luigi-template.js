@@ -63,7 +63,7 @@
 LuigiTemplate = (function() {
   "use strict";
 
-  var VERSION = '0.4.0';
+  var VERSION = '0.4.1';
 
   // Array.each polyfill
   var each = (function() {
@@ -258,7 +258,7 @@ LuigiTemplate = (function() {
           throw new Error('missing key: ' + row.key)
 
         return reduce(row.filters, function(r, f) {
-          return this.filters[f.name](r, f.args, o, this);
+          return me.filters[f.name](r, f.args, o, me);
         }, o[row.key]);
       } else {
         /* never reached */
