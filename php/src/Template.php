@@ -229,7 +229,7 @@ function parse_template(string $template) : array {
 
 namespace Luigi;
 
-public $FILTERS = [
+var $FILTERS = [
   'h' => function($s) {
     return htmlspecialchars($v, ENT_QUOTES);
   },
