@@ -94,7 +94,7 @@ final class TemplateFilter {
 
 
 abstract class Token {
-  public function run(RunContext $ctx) : string;
+  public abstract function run(RunContext &$ctx) : string;
 };
 
 final class LiteralToken extends Token {
@@ -104,7 +104,7 @@ final class LiteralToken extends Token {
     $this->val = $val;
   }
 
-  public function run(RunContext $ctx) : string {
+  public function run(RunContext &$ctx) : string {
     return $this->val;
   }
 };
@@ -229,7 +229,7 @@ function parse_template(string $template) : array {
 
 namespace Luigi;
 
-var $FILTERS = [
+$FILTERS = [
   'h' => function($s) {
     return htmlspecialchars($v, ENT_QUOTES);
   },
@@ -341,7 +341,7 @@ final class Template {
   }
 };
 
-public function run(
+function run(
   string $template,
   array $args = [],
   array $filters = []
@@ -367,7 +367,7 @@ final class Cache implements \ArrayAccess {
   public function offsetGet($key) {
     if (isset($this->lut[$key])) {
       return $this->lut[$key];
-    } else if (isset($this->templates[$key]) {
+    } else if (isset($this->templates[$key])) {
       $this->lut[$key] = new Template($this->templates[$key], $this->filters);
       return $this->lut[$key];
     } else {
