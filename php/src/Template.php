@@ -54,8 +54,6 @@ final class InvalidTemplateError extends Error {
   }
 };
 
-namespace Luigi;
-
 final class RunContext {
   public $args,
          $filters;
@@ -65,10 +63,6 @@ final class RunContext {
     $this->filters = $filters;
   }
 };
-
-namespace Luigi\Parser;
-
-use \Luigi\RunContext;
 
 final class TemplateFilter {
   private $name,
@@ -119,7 +113,8 @@ final class FilterToken extends Token {
   }
 
   public function run(RunContext &$ctx) : string {
-    if (!isset($args[$this->key])) {
+    # check key
+    if (!isset($ctx->args[$this->key])) {
       throw new UnknownKeyError($this->key);
     }
 
@@ -216,97 +211,113 @@ function parse_template(string $template) : array {
   }
 
   # map matches to tokens
-  return array_map(function($m) {
+  return array_reduce($matches, function($r, $m) {
     if ($m['key'] !== '') {
       # filter token
-      return new FilterToken($m['key'], parse_filters($m['filters']));
-    } else {
+      $r[] = new FilterToken($m['key'], parse_filters($m['filters']));
+    } else if (strlen($m['text']) > 0) {
       # literal token
-      return new LiteralToken($m['text']);
+      $r[] = new LiteralToken($m['text']);
+    } else {
+      # ignore empty string
     }
-  }, $matches);
+
+    return $r;
+  }, []);
 }
 
 namespace Luigi;
 
-$FILTERS = [
-  'h' => function($s) {
-    return htmlspecialchars($v, ENT_QUOTES);
-  },
+class Filters {
+  public static $FILTERS = null;
 
-  'u' => function($s) {
-    return urlencode($v);
-  },
+  public static function init() : void {
+    # prevent double initialization
+    if (self::$FILTERS !== null)
+      return;
 
-  'json' => function($v) {
-    return json_encode($v);
-  },
+    self::$FILTERS = [
+      'h' => function($v) {
+        return htmlspecialchars($v, ENT_QUOTES);
+      },
 
-  'hash' => function($v, $args) {
-    if (count($args) !== 1) {
-      throw new MissingFilterParameterError('hash');
-    }
+      'u' => function($v) {
+        return urlencode($v);
+      },
 
-    return hash($args[0], $v);
-  },
+      'json' => function($v) {
+        return json_encode($v);
+      },
 
-  'base64' => function($v) {
-    return base64_encode($v);
-  },
+      'hash' => function($v, $args) {
+        if (count($args) !== 1) {
+          throw new MissingFilterParameterError('hash');
+        }
 
-  'nl2br' => function($v) {
-    return nl2br($v);
-  },
+        return hash($args[0], $v);
+      },
 
-  'uc' => function($v) {
-    return strtoupper($v);
-  },
+      'base64' => function($v) {
+        return base64_encode($v);
+      },
 
-  'lc' => function($v) {
-    return strtolower($v);
-  },
+      'nl2br' => function($v) {
+        return nl2br($v);
+      },
 
-  'trim' => function($v) {
-    return trim($v);
-  },
+      'uc' => function($v) {
+        return strtoupper($v);
+      },
 
-  'rtrim' => function($v) {
-    return rtrim($v);
-  },
+      'lc' => function($v) {
+        return strtolower($v);
+      },
 
-  'ltrim' => function($v) {
-    return ltrim($v);
-  },
+      'trim' => function($v) {
+        return trim($v);
+      },
 
-  's' => function($v) {
-    return ($v == 1) ? '' : 's';
-  },
+      'rtrim' => function($v) {
+        return rtrim($v);
+      },
 
-  'strlen' => function($v) {
-    return strlen($v);
-  },
+      'ltrim' => function($v) {
+        return ltrim($v);
+      },
 
-  'count' => function($v) {
-    return count($v);
-  },
+      's' => function($v) {
+        return ($v == 1) ? '' : 's';
+      },
 
-  'key' => function($v, $args) {
-    if (count($args) !== 1) {
-      throw new MissingFilterParameterError('key');
-    }
+      'strlen' => function($v) {
+        return '' . strlen($v);
+      },
 
-    # get key
-    $key = $args[0];
+      'count' => function($v) {
+        return '' . count($v);
+      },
 
-    # make sure key exists
-    if (!isset($v[$key])) {
-      throw new UnknownKeyError($key);
-    }
+      'key' => function($v, $args) {
+        if (count($args) !== 1) {
+          throw new MissingFilterParameterError('key');
+        }
 
-    # return key
-    return $v[$key];
-  },
-];
+        # get key
+        $key = $args[0];
+
+        # make sure key exists
+        if (!isset($v[$key])) {
+          throw new UnknownKeyError($key);
+        }
+
+        # return key
+        return $v[$key];
+      },
+    ];
+  }
+};
+
+Filters::init();
 
 final class Template {
   private $template,
@@ -317,13 +328,11 @@ final class Template {
     string $template,
     array $custom_filters = []
   ) {
-    global $FILTERS;
-
     $this->template = $template;
-    $this->filters = count($custom_filters) ? $custom_filters : $FILTERS;
+    $this->filters = (count($custom_filters) > 0) ? $custom_filters : Filters::$FILTERS;
 
     # parse template into list of tokens
-    $this->tokens = Parser\parse_template($template);
+    $this->tokens = parse_template($template);
   }
 
   public function run(array $args = []) : string {
@@ -335,20 +344,15 @@ final class Template {
     }, $this->tokens));
   }
 
-  public static function once($str, $args = [], array $filters = []) {
-    $t = new Template($str, $filters);
+  public static function once(
+    string $template,
+    array $args = [],
+    array $filters = []
+  ) : string {
+    $t = new Template($template, $filters);
     return $t->run($args);
   }
 };
-
-function run(
-  string $template,
-  array $args = [],
-  array $filters = []
-) : string {
-  $t = new Template($template, $filters);
-  return $t->run($args);
-}
 
 final class Cache implements \ArrayAccess {
   private $templates,
@@ -357,7 +361,7 @@ final class Cache implements \ArrayAccess {
 
   public function __construct(array $templates, array $filters = []) {
     $this->templates = $templates;
-    $this->filters = $filters;
+    $this->filters = (count($filters) > 0) ? $filters : Filters::$FILTERS;
   }
 
   public function offsetExists($key) : bool {
