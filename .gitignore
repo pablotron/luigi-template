@@ -1,0 +1,4 @@
+*.sw?
+php/vendor
+php/docs/
+php/examples/*
