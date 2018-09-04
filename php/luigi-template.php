@@ -1,283 +1,393 @@
 <?php
+declare(strict_types = 1);
 
 namespace Luigi;
 
-const VERSION = '0.4.0';
+const VERSION = '0.4.2';
 
-final class Error extends \Exception {};
+class Error extends \Exception {};
 
-final class Filters {
-  private static $filters = null;
+class UnknownTypeError extends Error {
+  public $type,
+         $name;
 
-  public static function init() {
-    if (self::$filters !== null)
-      return;
-
-    self::$filters = array(
-      'h' => function($s) {
-        return htmlspecialchars($v);
-      },
-
-      'u' => function($s) {
-        return urlencode($v);
-      },
-
-      'json' => function($v) {
-        return json_encode($v);
-      },
-
-      'hash' => function($v, $args) {
-        $algo = (count($args) == 1) ? $args[0] : 'md5';
-        return hash($algo, $v);
-      },
-
-      'base64' => function($v) {
-        return base64_encode($v);
-      },
-
-      'nl2br' => function($v) {
-        return nl2br($v);
-      },
-
-      'uc' => function($v) {
-        return strtoupper($v);
-      },
-
-      'lc' => function($v) {
-        return strtolower($v);
-      },
-
-      'trim' => function($v) {
-        return trim($v);
-      },
-
-      'rtrim' => function($v) {
-        return rtrim($v);
-      },
-
-      'ltrim' => function($v) {
-        return ltrim($v);
-      },
-
-      's' => function($v) {
-        return ($v == 1) ? '' : 's';
-      },
-
-      'strlen' => function($v) {
-        return strlen($v);
-      },
-
-      'count' => function($v) {
-        return count($v);
-      },
-    );
-  }
-
-  public static function get($key) {
-    self::init();
-
-    if (!isset(self::$filters[$key]))
-      throw new Error("unknown filter: $key");
-
-    return self::$filters[$key];
-  }
-
-  public static function add(array $filters) {
-    self::init();
-    self::$filters = array_merge(self::$filters, $filters);
+  public function __construct(string $type, string $name) {
+    $this->type = $type;
+    $this->name = $name;
+    parent::__construct("unknown $type: $name");
   }
 };
 
-final class Parser {
-  private static $RES = array(
-    'action' => '/
-      # match opening brace
-      %\{
-      
-      # match optional whitespace
-      \s*
+final class UnknownTemplateError extends UnknownTypeError {
+  public function __construct(string $name) {
+    parent::__construct('template', $name);
+  }
+};
 
-      # match key
-      (?<key>[^\s\|\}]+)
+final class UnknownFilterError extends UnknownTypeError {
+  public function __construct(string $name) {
+    parent::__construct('filter', $name);
+  }
+};
 
-      # match filter(s)
-      (?<filters>(\s*\|(\s*[^\s\|\}]+)+)*)
+final class UnknownKeyError extends UnknownTypeError {
+  public function __construct(string $name) {
+    parent::__construct('key', $name);
+  }
+};
 
-      # match optional whitespace
-      \s*
-    
-      # match closing brace
-      \}
-      
-      # or match up all non-% chars or a single % char
-      | (?<text>[^%]* | %)
-    /mx',
+final class MissingFilterParameterError extends Error {
+  public $filter_name;
 
-    'filter' => '/
-      # match filter name
-      (?<name>\S+)
-    
-      # match filter arguments (optional)
-      (?<args>(\s*\S+)*)
-    
-      # optional trailing whitespace
-      \s*
-    /mx',
+  public function __construct(string $filter_name) {
+    $this->filter_name = $filter_name;
+    parent::__construct("missing required filter parameter for filter $filter_name");
+  }
+};
 
-    'delim_filters' => '/\s*\|\s*/m',
-    'delim_args' => '/\s+/m',
-  );
+final class InvalidTemplateError extends Error {
+  public $template;
 
-  public static function parse_template($template) {
-    # build list of matches
-    $matches = array();
-    $num_matches = preg_match_all(
-      self::$RES['action'],
-      $template,
-      $matches,
-      PREG_SET_ORDER
-    );
+  public function __construct(string $template) {
+    $this->template = $template;
+    parent::__construct("invalid template: $template");
+  }
+};
 
-    # check for error
-    if ($num_matches === false)
-      throw new Error("invalid template: $template");
-  
-    # walk over matches and build list of actions
-    $r = array_map(function($m) {
-      if ($m['key'] !== '') {
-        #  key and filters
-        return array(
-          'type'    => 'action',
-          'key'     => $m['key'],
-          'filters' => self::parse_filters($m['filters']),
-        );
-      } else {
-        # literal text
-        return array(
-          'type' => 'text',
-          'text' => $m['text'],
-        );
-      }
-    }, $matches);
+namespace Luigi;
+
+final class RunContext {
+  public $args,
+         $filters;
+
+  public function __construct(array $args, array $filters) {
+    $this->args = $args;
+    $this->filters = $filters;
+  }
+};
+
+final class TemplateFilter {
+  private $name,
+          $args;
+
+  public function __construct(string $name, array $args) {
+    $this->name = $name;
+    $this->args = $args;
+  }
+
+  public function run($v, array &$args, array &$filters) {
+    if (!isset($filters[$this->name])) {
+      throw new UnknownFilterError($this->name);
+    }
+
+    # get callback
+    $cb = $filters[$this->name];
+
+    # invoke callback, return result
+    return $cb($v, $this->args, $args);
+  }
+};
+
+namespace Luigi\Parser;
+
+use Luigi\RunContext;
+use Luigi
+
+abstract class Token {
+  public function run(array $args, array $filters) : string;
+};
+
+final class LiteralToken extends Token {
+  private $val;
+
+  public function __construct(string $val) {
+    $this->val = $val;
+  }
+
+  public function run(array &$args, array &$filters) : string {
+    return $this->val;
+  }
+};
+
+final class FilterToken extends Token {
+  private $key,
+          $filters;
+
+  public function __construct(string $key, array $filters) {
+    $this->key = $key;
+    $this->filters = $filters;
+  }
+
+  public function run(array &$args, array &$filters) : string {
+    if (!isset($args[$this->key])) {
+      throw new UnknownKeyError($this->key);
+    }
+
+    # get initial value
+    $r = $args[$this->key];
+
+    if ($this->filters && count($this->filters) > 0) {
+      # pass value through filters
+      $r = array_reduce($this->filters, function($r, $f) use (&$args, &$filters) {
+        return $f->run($r, $args, $filters);
+      }, $r);
+    }
 
     # return result
     return $r;
   }
-
-  public static function parse_filters($filters) {
-    # split into individual filters
-    $r = array();
-    foreach (preg_split(self::$RES['delim_filters'], $filters) as $f) {
-      # trim whitespace
-      $f = trim($f);
-
-      # skip empty filters
-      if (!$f)
-        continue;
-
-      # match filter
-      $md = array();
-      if (!preg_match(self::$RES['filter'], $f, $md))
-        throw new Error("invalid filter: $f");
-
-      # add filter to results
-      $r[] = array(
-        # filter name
-        'name' => $md['name'],
-
-        # filter arguments
-        'args' => (count($md) > 2) ? preg_split(
-          self::$RES['delim_args'],
-          trim($md['args'])
-        ) : array(),
-      );
-    }
-
-    # return results
-    return $r;
-  }
 };
 
-final class Template {
-  private $template, $filters, $actions
+const TOKEN_RE = '/
+  # match opening brace
+  %\{
 
-  public function __construct($template, $filters = null) {
-    $this->template = $template;
-    $this->filters = $filters;
+  # match optional whitespace
+  \s*
 
-    # parse template into list of actions
-    $this->actions = Parser::parse_template($template);
+  # match key
+  (?<key>[^\s\|\}]+)
+
+  # match filter(s)
+  (?<filters>(\s*\|(\s*[^\s\|\}]+)+)*)
+
+  # match optional whitespace
+  \s*
+
+  # match closing brace
+  \}
+
+  # or match up all non-% chars or a single % char
+  | (?<text>[^%]* | %)
+/mx';
+
+const FILTER_RE = '/
+  # match filter name
+  (?<name>\S+)
+
+  # match filter arguments (optional)
+  (?<args>(\s*\S+)*)
+
+  # optional trailing whitespace
+  \s*
+/mx';
+
+const DELIM_FILTERS_RE = '/\s*\|\s*/m';
+
+const DELIM_ARGS_RE = '/\s+/m';
+
+function parse_filters(string $filters) : array {
+  # split into individual filters
+  $r = [];
+
+  foreach (preg_split(DELIM_FILTERS_RE, $filters) as $f) {
+    # trim whitespace
+    $f = trim($f);
+
+    # skip empty filters
+    if (!$f)
+      continue;
+
+    # match filter
+    $md = [];
+    if (!preg_match(FILTER_RE, $f, $md)) {
+      throw new UnknownFilterError($f);
+    }
+
+    # add filter to results
+    $r[] = new TemplateFilter($md['name'], (count($md) > 2) ? preg_split(
+      DELIM_ARGS_RE,
+      trim($md['args'])
+    ) : []);
   }
 
-  public function run(array $args = array()) {
+  # return results
+  return $r;
+}
+
+function parse_template(string $template) : array {
+  # build list of matches
+  $matches = [];
+  $num_matches = preg_match_all(TOKEN_RE, $template, $matches, PREG_SET_ORDER);
+
+  # check for error
+  if ($num_matches === false) {
+    throw new InvalidTemplateError($template);
+  }
+
+  # map matches to tokens
+  return array_map(function($m) {
+    if ($m['key'] !== '') {
+      # filter token
+      return new FilterToken($m['key'], parse_filters($m['filters']));
+    } else {
+      # literal token
+      return new LiteralToken($m['text']);
+    }
+  }, $matches);
+}
+
+namespace Luigi;
+
+public $FILTERS = [
+  'h' => function($s) {
+    return htmlspecialchars($v, ENT_QUOTES);
+  },
+
+  'u' => function($s) {
+    return urlencode($v);
+  },
+
+  'json' => function($v) {
+    return json_encode($v);
+  },
+
+  'hash' => function($v, $args) {
+    if (count($args) !== 1) {
+      throw new MissingFilterParameterError('hash');
+    }
+
+    return hash($args[0], $v);
+  },
+
+  'base64' => function($v) {
+    return base64_encode($v);
+  },
+
+  'nl2br' => function($v) {
+    return nl2br($v);
+  },
+
+  'uc' => function($v) {
+    return strtoupper($v);
+  },
+
+  'lc' => function($v) {
+    return strtolower($v);
+  },
+
+  'trim' => function($v) {
+    return trim($v);
+  },
+
+  'rtrim' => function($v) {
+    return rtrim($v);
+  },
+
+  'ltrim' => function($v) {
+    return ltrim($v);
+  },
+
+  's' => function($v) {
+    return ($v == 1) ? '' : 's';
+  },
+
+  'strlen' => function($v) {
+    return strlen($v);
+  },
+
+  'count' => function($v) {
+    return count($v);
+  },
+
+  'key' => function($v, $args) {
+    if (count($args) !== 1) {
+      throw new MissingFilterParameterError('key');
+    }
+
+    # get key
+    $key = $args[0];
+
+    # make sure key exists
+    if (!isset($v[$key])) {
+      throw new UnknownKeyError($key);
+    }
+
+    # return key
+    return $v[$key];
+  },
+];
+
+final class Template {
+  private $template,
+          $filters,
+          $tokens;
+
+  public function __construct(
+    string $template,
+    array $custom_filters = []
+  ) {
+    global $FILTERS;
+
+    $this->template = $template;
+    $this->filters = count($custom_filters) ? $custom_filters : $FILTERS;
+
+    # parse template into list of tokens
+    $this->tokens = Parser\parse_template($template);
+  }
+
+  public function run(array $args = []) : string {
     # php sucks
     $me = $this;
 
-    return join('', array_map(function($row) use ($me, $args) {
-      if ($row['type'] == 'text') {
-        # literal text
-        return $row['text'];
-      } else if ($row['type'] == 'action') {
-        # template key (possibly with filters)
-
-        # check value
-        if (!isset($args[$row['key']]))
-          throw new Error("unknown key: {$row['key']}");
-
-        # pass value through filters and return result
-        return array_reduce($row['filters'], function($r, $f) use ($me, $args) {
-          # get filter
-          $fn = $me->get_filter($f['name']);
-        
-          # call filter and return result
-          return call_user_func($fn, $r, $f['args'], $args, $me);
-        }, $args[$row['key']]);
-      } else {
-        # should never be reached
-        throw new Error("unknown action type: {$row['type']}");
-      }
-    }, $this->actions));
+    return join('', array_map(function($token) use ($me, $args) {
+      return $token->run($args, $this->filters);
+    }, $this->tokens));
   }
 
-  public function get_filter($key) {
-    if ($this->filters) {
-      # use custom filters
-      return $this->filters->get($key);
-    } else {
-      # default to built-in filters
-      return Filters::get($key);
-    }
-  }
-
-  public static function run_once($str, $args = array(), $filters = null) {
+  public static function once($str, $args = [], array $filters = []) {
     $t = new Template($str, $filters);
     return $t->run($args);
   }
 };
 
-final class Cache {
-  private $templates, $filters, $lut = array();
+public function run(
+  string $template,
+  array $args = [],
+  array $filters = []
+) : string {
+  $t = new Template($template, $filters);
+  return $t->run($args);
+}
 
-  public function __construct(array $templates, $filters = null) {
+final class Cache implements \ArrayAccess {
+  private $templates,
+          $filters,
+          $lut = [];
+
+  public function __construct(array $templates, array $filters = []) {
     $this->templates = $templates;
     $this->filters = $filters;
-    $this->o = $o;
   }
 
-  public function get($key) {
-    if (!isset($this->lut[$key])) {
-      if (!isset($this->templates[$key]))
-        throw new Error("unknown template: $key");
+  public function offsetExists($key) : bool {
+    return isset($this->templates[$key]);
+  }
 
-      # lazy-load template
+  public function offsetGet($key) {
+    if (isset($this->lut[$key])) {
+      return $this->lut[$key];
+    } else if (isset($this->templates[$key]) {
       $this->lut[$key] = new Template($this->templates[$key], $this->filters);
+      return $this->lut[$key];
+    } else {
+      throw new UnknownTemplateError($key);
     }
-
-    # return result
-    return $this->lut[$key];
   }
 
-  public function run($key, array $args = array()) {
-    return $this->get($key)->run($args);
+  public function offsetUnset($key) {
+    delete($this->lut[$key]);
+    delete($this->templates[$key]);
+  }
+
+  public function offsetSet($key, $val) : bool {
+    delete($this->lut[$key]);
+    $this->templates[$key] = $val;
+    return isset($this->templates[$key]);
+  }
+
+
+  public function run(string $key, array $args = []) : string {
+    return $this->offsetGet($key)->run($args);
   }
 };
