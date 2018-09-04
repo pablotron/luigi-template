@@ -66,6 +66,10 @@ final class RunContext {
   }
 };
 
+namespace Luigi\Parser;
+
+use \Luigi\RunContext;
+
 final class TemplateFilter {
   private $name,
           $args;
@@ -88,13 +92,9 @@ final class TemplateFilter {
   }
 };
 
-namespace Luigi\Parser;
-
-use Luigi\RunContext;
-use Luigi
 
 abstract class Token {
-  public function run(array $args, array $filters) : string;
+  public function run(RunContext $ctx) : string;
 };
 
 final class LiteralToken extends Token {
@@ -104,7 +104,7 @@ final class LiteralToken extends Token {
     $this->val = $val;
   }
 
-  public function run(array &$args, array &$filters) : string {
+  public function run(RunContext $ctx) : string {
     return $this->val;
   }
 };
@@ -118,18 +118,18 @@ final class FilterToken extends Token {
     $this->filters = $filters;
   }
 
-  public function run(array &$args, array &$filters) : string {
+  public function run(RunContext &$ctx) : string {
     if (!isset($args[$this->key])) {
       throw new UnknownKeyError($this->key);
     }
 
     # get initial value
-    $r = $args[$this->key];
+    $r = $ctx->args[$this->key];
 
     if ($this->filters && count($this->filters) > 0) {
       # pass value through filters
-      $r = array_reduce($this->filters, function($r, $f) use (&$args, &$filters) {
-        return $f->run($r, $args, $filters);
+      $r = array_reduce($this->filters, function($r, $f) use (&$ctx) {
+        return $f->run($r, $ctx->args, $ctx->filters);
       }, $r);
     }
 
@@ -327,11 +327,11 @@ final class Template {
   }
 
   public function run(array $args = []) : string {
-    # php sucks
-    $me = $this;
+    # create run context
+    $ctx = new RunContext($args, $this->filters);
 
-    return join('', array_map(function($token) use ($me, $args) {
-      return $token->run($args, $this->filters);
+    return join('', array_map(function($token) use (&$ctx) {
+      return $token->run($ctx);
     }, $this->tokens));
   }
 
