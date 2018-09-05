@@ -226,8 +226,6 @@ function parse_template(string $template) : array {
   }, []);
 }
 
-namespace Luigi;
-
 class Filters {
   public static $FILTERS = null;
 
@@ -379,15 +377,14 @@ final class Cache implements \ArrayAccess {
     }
   }
 
-  public function offsetUnset($key) {
-    delete($this->lut[$key]);
-    delete($this->templates[$key]);
+  public function offsetUnset($key) : void {
+    unset($this->lut[$key]);
+    unset($this->templates[$key]);
   }
 
-  public function offsetSet($key, $val) : bool {
-    delete($this->lut[$key]);
+  public function offsetSet($key, $val) : void {
+    unset($this->lut[$key]);
     $this->templates[$key] = $val;
-    return isset($this->templates[$key]);
   }
 
 
