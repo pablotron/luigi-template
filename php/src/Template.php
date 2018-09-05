@@ -629,6 +629,116 @@ Filters::init();
  *
  *     # prints "hello Paul"
  *
+ * You can also filter values in templates, using the pipe symbol:
+ *
+ *     # create template that converts name to upper-case
+ *     $tmpl = new Template('hello %{name | uc}');
+ *
+ *     # run template and print result
+ *     echo $tmpl->run([
+ *       'name' => 'Paul',
+ *     ]) . "\n";
+ *
+ *     # prints "hello PAUL"
+ *
+ * Filters can be chained:
+ *
+ *     # create template that converts name to upper-case and then
+ *     # strips leading and trailing whitespace
+ *     $tmpl = new Template('hello %{name | uc | trim}');
+ *
+ *     # run template and print result
+ *     echo $tmpl->run([
+ *       'name' => '   Paul    ',
+ *     ]) . "\n";
+ *
+ *     # prints "hello PAUL"
+ *
+ * Filters can take arguments:
+ *
+ *     # create template that converts name to lowercase and then
+ *     # calculates the SHA-1 digest of the result
+ *     $tmpl = new Template('hello %{name | lc | hash sha1}');
+ *
+ *     # run template and print result
+ *     echo $tmpl->run([
+ *       'name' => 'Paul',
+ *     ]) . "\n";
+ *
+ *     # prints "hello a027184a55211cd23e3f3094f1fdc728df5e0500"
+ *
+ * You can define custom global filters:
+ *
+ *     # load template and filter classes
+ *     use \Pablotron\Luigi\Template;
+ *     use \Pablotron\Luigi\Filters;
+ *
+ *     # create custom global filter named 'foobarify'
+ *     Filters::$FILTERS['foobarify'] = function($s) {
+ *       return "foo-{$s}-bar";
+ *     };
+ *
+ *     # create template that converts name to lowercase and then
+ *     # calculates the SHA-1 digest of the result
+ *     $tmpl = new Template('hello %{name | foobarify}');
+ *
+ *     # run template and print result
+ *     echo $tmpl->run([
+ *       'name' => 'Paul',
+ *     ]) . "\n";
+ *
+ *     # prints "hello foo-Paul-bar"
+ *
+ * Or define custom filters for a template:
+ *
+ *     # load template and filter classes
+ *     use \Pablotron\Luigi\Template;
+ *
+ *     # create template that converts name to lowercase and then
+ *     # calculates the SHA-1 digest of the result
+ *     $tmpl = new Template('hello %{name | reverse}', [);
+ *       'reverse' => function($s) {
+ *         return strrev($s);
+ *       },
+ *     ]);
+ *
+ *     # run template and print result
+ *     echo $tmpl->run([
+ *       'name' => 'Paul',
+ *     ]) . "\n";
+ *
+ *     # prints "hello luaP"
+ *
+ * Your custom filters can accept arguments, too:
+ *
+ *     # load template and filter classes
+ *     use \Pablotron\Luigi\Template;
+ *     use \Pablotron\Luigi\Filters;
+ *
+ *     # create custom global filter named 'foobarify'
+ *     Filters::$FILTERS['wrap'] = function($s, $args) {
+ *        if (count($args) == 2) {
+ *          return sprintf('(%s, %s, %s)', $args[0], $s, $args[1]);
+ *        } else if (count($args) == 1) {
+ *          return sprintf('(%s in %s)', %s, $args[0]);
+ *        } else if (count($args) == 0) {
+ *          return $s;
+ *        } else {
+ *          throw new Exception("invalid argument count");
+ *        }
+ *     };
+ *
+ *     # create template that converts name to lowercase and then
+ *     # calculates the SHA-1 digest of the result
+ *     $tmpl = new Template('sandwich: %{meat | wrap slice heel}, taco: %{meat | wrap shell}');
+ *
+ *     # run template and print result
+ *     echo $tmpl->run([
+ *       'meat' => 'chicken',
+ *     ]) . "\n";
+ *
+ *     # prints "sandwich: (slice, chicken, heel), taco: (chicken in shell)"
+ *
  * @api
  *
  */
