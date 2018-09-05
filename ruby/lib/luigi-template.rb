@@ -6,6 +6,37 @@ module Luigi
   #
   VERSION = '0.4.0'
 
+  class LuigiError < Exception
+  end
+
+  class BaseUnknownError < LuigiError
+    attr_reader :type_name,
+                :name
+
+    def initialize(type_name, name)
+      @type_name, @name = type_name, name
+      super("unknown #{type_name}: #{name}")
+    end
+  end
+
+  class UnknownKeyError < BaseUnknownError
+    def initialize(key)
+      super(:key, key)
+    end
+  end
+
+  class UnknownFilterError < BaseUnknownError
+    def initialize(filter)
+      super(:filter, filter)
+    end
+  end
+
+  class UnknownTemplateError < BaseUnknownError
+    def initialize(template)
+      super(:template, template);
+    end
+  end
+
   #
   # built-in filters
   #
@@ -100,7 +131,10 @@ module Luigi
       delim_args: %r{
         \s+
       },
-    }
+    }.reduce({}) do |r, row|
+      r[row[0]] = row[1].freeze
+      r
+    end.freeze
 
     #
     # Parse a (possibly empty) string into an array of actions.
@@ -108,21 +142,13 @@ module Luigi
     def self.parse_template(str)
       str.scan(RES[:action]).map { |m|
         if m[0] && m[0].length > 0
-          r = {
-            type: :action,
-            key: m[0].intern,
-            filters: parse_filters(m[1]),
-          }
+          fs = parse_filters(m[1]).freeze
+          { type: :action, key: m[0].intern, filters: fs }
         else
           # literal text
-          r = { type: :text, text: m[2] }
-        end
-
-        # pp r
-
-        # return result
-        r
-      }
+          { type: :text, text: m[2].freeze }
+        end.freeze
+      }.freeze
     end
 
     #
@@ -180,8 +206,8 @@ module Luigi
     # Create a new Template from the given string.
     #
     def initialize(str, filters = FILTERS)
-      @str, @filters = str, filters
-      @actions = Parser.parse_template(str)
+      @str, @filters = str.freeze, filters
+      @actions = Parser.parse_template(str).freeze
     end
 
     #
@@ -200,13 +226,15 @@ module Luigi
             args[a[:key].to_s]
           else
             # invalid key
-            raise "unknown argument: #{a[:key]}"
+            raise UnknownKeyError.new(a[:key])
           end
 
           # filter value
           a[:filters].inject(val) do |r, f|
             # check filter name
-            raise "unknown filter: #{f[:name]}" unless @filters.key?(f[:name])
+            unless @filters.key?(f[:name])
+              raise UnknownFilterError.new(f[:name])
+            end
 
             # call filter, return result
             @filters[f[:name]].call(r, f[:args], args, self)
@@ -219,6 +247,10 @@ module Luigi
           raise "unknown action type: #{a[:type]}"
         end
       }.join
+    end
+
+    def to_s
+      @str
     end
   end
 
@@ -235,7 +267,7 @@ module Luigi
         k = k.intern
 
         # make sure template exists
-        raise "unknown template: #{k}" unless strings.key?(k)
+        raise UnknownTemplateError.new(k) unless strings.key?(k)
 
         # create template
         h[k] = Template.new(strings[k], filters)
