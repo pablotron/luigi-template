@@ -26,7 +26,7 @@ module Luigi
     },
 
     # uri-escape string
-    u: proc( { |v, args, row, t|
+    u: proc { |v, args, row, t|
       require 'uri'
       URI.escape((v || '').to_s)
     },
@@ -50,7 +50,7 @@ module Luigi
     # hash string
     hash: proc { |v, args, row, t|
       require 'openssl'
-      OpenSSL::Digest.new(args[0] || 'md5').hexdigest((v || '').to_s)
+      OpenSSL::Digest.new(args[0]).hexdigest((v || '').to_s)
     },
   }
 
@@ -166,6 +166,16 @@ module Luigi
   # Template class.
   #
   class Template
+    attr_reader :str
+
+    #
+    # Create a new template and run it with the given arguments and
+    # filter.
+    #
+    def self.run(str, args = {}, filters = FILTERS)
+      Template.new(str, filters).run(args)
+    end
+
     #
     # Create a new Template from the given string.
     #
