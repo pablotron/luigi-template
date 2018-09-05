@@ -374,4 +374,13 @@ final class TemplateTest extends TestCase {
 
     $this->assertEquals($want, $r);
   }
+
+  public function testToString() : void {
+    $want = '%{val|key foo}';
+
+    # run template
+    $r = new Template($want);
+
+    $this->assertEquals($want, $r);
+  }
 };
