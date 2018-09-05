@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace Pablotron\Luigi\Tests;
 use \PHPUnit\Framework\TestCase;
-use \Luigi\Template;
+use \Pablotron\Luigi\Template;
 
 final class TemplateTest extends TestCase {
   public function testNewTemplate() : void {
@@ -89,12 +89,12 @@ final class TemplateTest extends TestCase {
   }
 
   public function testCustomGlobalFilter() : void {
-    \Luigi\Filters::$FILTERS['barify'] = function($s) {
+    \Pablotron\Luigi\Filters::$FILTERS['barify'] = function($s) {
       return 'BAR';
     };
 
     # create template cache
-    $cache = new \Luigi\Cache([
+    $cache = new \Pablotron\Luigi\Cache([
       'foo' => 'foo%{bar|barify}',
     ]);
 
@@ -124,7 +124,7 @@ final class TemplateTest extends TestCase {
 
   public function testCache() : void {
     # create template cache
-    $cache = new \Luigi\Cache([
+    $cache = new \Pablotron\Luigi\Cache([
       'foo' => 'foo%{bar}',
     ]);
 
@@ -148,7 +148,7 @@ final class TemplateTest extends TestCase {
   }
 
   public function testUnknownKeyError() : void {
-    $this->expectException(\Luigi\UnknownKeyError::class);
+    $this->expectException(\Pablotron\Luigi\UnknownKeyError::class);
 
     # run template
     $r = Template::once('foo%{unknown-key}', [
@@ -157,7 +157,7 @@ final class TemplateTest extends TestCase {
   }
 
   public function testUnknownFilterError() : void {
-    $this->expectException(\Luigi\UnknownFilterError::class);
+    $this->expectException(\Pablotron\Luigi\UnknownFilterError::class);
 
     # run template
     $r = Template::once('foo%{bar|unknown-filter}', [
@@ -166,10 +166,10 @@ final class TemplateTest extends TestCase {
   }
 
   public function testUnknownTemplateError() : void {
-    $this->expectException(\Luigi\UnknownTemplateError::class);
+    $this->expectException(\Pablotron\Luigi\UnknownTemplateError::class);
 
     # create cache
-    $cache = new \Luigi\Cache([
+    $cache = new \Pablotron\Luigi\Cache([
       'foo' => 'foo%{bar}',
     ]);
 
