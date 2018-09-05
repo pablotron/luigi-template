@@ -4,18 +4,18 @@ module Luigi
   #
   # library version
   #
-  VERSION = '0.4.0'
+  VERSION = '0.4.2'
 
   class LuigiError < Exception
   end
 
   class BaseUnknownError < LuigiError
-    attr_reader :type_name,
+    attr_reader :type,
                 :name
 
-    def initialize(type_name, name)
-      @type_name, @name = type_name, name
-      super("unknown #{type_name}: #{name}")
+    def initialize(type, name)
+      @type, @name = type, name
+      super("unknown #{type}: #{name}")
     end
   end
 
@@ -282,50 +282,4 @@ module Luigi
       @templates[key].run(args)
     end
   end
-
-  #
-  # test module
-  #
-  module Test
-    # test template
-    TEMPLATE = '
-      basic test: hello %{name}
-      test filters: hello %{name | uc | base64 | hash sha1}
-      test custom: hello %{name|custom}
-      test custom_with_arg: %{name|custom_with_arg asdf}
-    '
-
-    CUSTOM_FILTERS = {
-      custom: proc {
-        'custom'
-      },
-
-      custom_with_arg: proc { |v, args|
-        args.first || 'custom'
-      },
-    }
-
-    # test template cache
-    CACHE = {
-      test: TEMPLATE
-    }
-
-    # test arguments
-    ARGS = {
-      name: 'paul',
-    }
-
-    def self.run
-      # add custom filters
-      Luigi::FILTERS.update(CUSTOM_FILTERS)
-
-      # test individual template
-      puts Template.new(TEMPLATE).run(ARGS)
-
-      # test template cache
-      puts Cache.new(CACHE).run(:test, ARGS)
-    end
-  end
 end
-
-Luigi::Test.run if __FILE__ == $0

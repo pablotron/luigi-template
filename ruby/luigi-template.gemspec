@@ -8,7 +8,12 @@ Gem::Specification.new do |s|
   s.description = 'Simple string templating library.'
   s.authors     = ['Paul Duncan']
   s.email       = 'pabs@pablotron.org'
-  s.files       = ["lib/luigi-template.rb"]
   s.homepage    = 'https://github.com/pablotron/luigi-template'
   s.license     = 'MIT'
+  s.files       = %w{
+    README.mkd
+    Rakefile
+    test/test_template.rb
+    lib/luigi-template.rb
+  }
 end
