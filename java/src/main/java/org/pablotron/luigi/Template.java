@@ -35,6 +35,15 @@ public final class Template {
     return r.toString();
   }
 
+  public void run(
+    final Map<String, String> args,
+    final ResultHandler r
+  ) throws LuigiError {
+    for (Action a: this.actions) {
+      r.append(a.run(this.filters, args));
+    }
+  }
+
   public String toString() {
     return this.template;
   }

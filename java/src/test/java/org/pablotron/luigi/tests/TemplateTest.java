@@ -3,6 +3,7 @@ import java.util.HashMap;
 
 import org.pablotron.luigi.LuigiError;
 import org.pablotron.luigi.Template;
+import org.pablotron.luigi.ResultHandler;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -33,6 +34,29 @@ public final class TemplateTest {
     final String r = t.run(TEST_ARGS);
 
     assertEquals("foofoo", r);
+  }
+
+  private static final class TestResultHandler implements ResultHandler {
+    private final StringBuilder sb;
+    public TestResultHandler(final StringBuilder sb) {
+      this.sb = sb;
+    }
+
+    public void append(final String s) {
+      sb.append(s);
+    }
+  };
+
+  @Test
+  public void testResultHandler() throws LuigiError {
+    final Template t = new Template("foo%{bar}");
+    final StringBuilder sb = new StringBuilder();
+    final TestResultHandler rh = new TestResultHandler(sb);
+
+    t.run(TEST_ARGS, rh);
+    final String r = sb.toString();
+
+    assertEquals("foofoo", sb.toString());
   }
 
   @Test
