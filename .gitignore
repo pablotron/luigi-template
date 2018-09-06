@@ -4,3 +4,4 @@ php/docs/
 php/examples/*
 ruby/*.gem
 ruby/docs/
+java/target/

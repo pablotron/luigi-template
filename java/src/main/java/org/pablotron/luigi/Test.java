@@ -1,12 +1,12 @@
-package pablotron.luigi;
+package org.pablotron.luigi;
 
 import java.util.Map;
 import java.util.HashMap;
 
-import pablotron.luigi.LuigiError;
-import pablotron.luigi.Filter;
-import pablotron.luigi.Template;
-import pablotron.luigi.Cache;
+import org.pablotron.luigi.LuigiError;
+import org.pablotron.luigi.Filter;
+import org.pablotron.luigi.Template;
+import org.pablotron.luigi.Cache;
 
 public final class Test {
   // test template

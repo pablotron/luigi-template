@@ -1,14 +1,14 @@
-package pablotron.luigi;
+package org.pablotron.luigi;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
-import pablotron.luigi.actions.Action;
-import pablotron.luigi.actions.FilterAction;
-import pablotron.luigi.actions.TextAction;
-import pablotron.luigi.FilterReference;
-import pablotron.luigi.LuigiError;
+import org.pablotron.luigi.actions.Action;
+import org.pablotron.luigi.actions.FilterAction;
+import org.pablotron.luigi.actions.TextAction;
+import org.pablotron.luigi.FilterReference;
+import org.pablotron.luigi.LuigiError;
 
 public final class Parser {
   private static final Pattern RE_ACTION = Pattern.compile(

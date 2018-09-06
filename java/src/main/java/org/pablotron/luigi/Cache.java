@@ -1,11 +1,11 @@
-package pablotron.luigi;
+package org.pablotron.luigi;
 
 import java.util.Map;
 import java.util.HashMap;
-import pablotron.luigi.Filter;
-import pablotron.luigi.Template;
-import pablotron.luigi.LuigiError;
-import pablotron.luigi.actions.Action;
+import org.pablotron.luigi.Filter;
+import org.pablotron.luigi.Template;
+import org.pablotron.luigi.LuigiError;
+import org.pablotron.luigi.actions.Action;
 
 public final class Cache {
   private final Map<String, String> strings;

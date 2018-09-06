@@ -1,4 +1,4 @@
-package pablotron.luigi;
+package org.pablotron.luigi;
 
 import java.util.Map;
 import java.util.HashMap;

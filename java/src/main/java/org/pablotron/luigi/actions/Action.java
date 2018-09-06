@@ -1,8 +1,8 @@
-package pablotron.luigi.actions;
+package org.pablotron.luigi.actions;
 
 import java.util.Map;
-import pablotron.luigi.Filter;
-import pablotron.luigi.LuigiError;
+import org.pablotron.luigi.Filter;
+import org.pablotron.luigi.LuigiError;
 
 public interface Action {
   public String run(

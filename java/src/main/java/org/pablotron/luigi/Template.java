@@ -1,10 +1,10 @@
-package pablotron.luigi;
+package org.pablotron.luigi;
 
 import java.util.Map;
-import pablotron.luigi.Parser;
-import pablotron.luigi.Filter;
-import pablotron.luigi.LuigiError;
-import pablotron.luigi.actions.Action;
+import org.pablotron.luigi.Parser;
+import org.pablotron.luigi.Filter;
+import org.pablotron.luigi.LuigiError;
+import org.pablotron.luigi.actions.Action;
 
 public final class Template {
   private static final String VERSION = "0.4.0";
@@ -33,5 +33,9 @@ public final class Template {
       r.append(a.run(this.filters, args));
 
     return r.toString();
+  }
+
+  public String toString() {
+    return this.template;
   }
 };

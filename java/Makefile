@@ -1,14 +1,14 @@
-SOURCES=$(shell find . -type f -name \*.java)
-OUT=luigi-template.jar
+SOURCES=$(shell find src/main/java -type f -name \*.java)
+OUT=$(shell pwd)/luigi-template.jar
 
 all: $(SOURCES)
 	javac $(SOURCES)
 
 $(OUT): all
-	jar cf $(OUT) pablotron
+	cd src/main/java && jar cf $(OUT) org
 
 jar: $(OUT)
 
 clean:
-	find . -type f -name \*.class -exec rm -f '{}' ';'
+	find src/main/java -type f -name \*.class -exec rm -f '{}' ';'
 	rm -f $(OUT)

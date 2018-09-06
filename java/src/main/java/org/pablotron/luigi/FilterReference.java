@@ -1,4 +1,4 @@
-package pablotron.luigi;
+package org.pablotron.luigi;
 
 public final class FilterReference {
   public final String name;

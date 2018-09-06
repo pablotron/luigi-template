@@ -1,9 +1,9 @@
-package pablotron.luigi.actions;
+package org.pablotron.luigi.actions;
 
 import java.util.Map;
-import pablotron.luigi.actions.Action;
-import pablotron.luigi.Filter;
-import pablotron.luigi.LuigiError;
+import org.pablotron.luigi.actions.Action;
+import org.pablotron.luigi.Filter;
+import org.pablotron.luigi.LuigiError;
 
 public final class TextAction implements Action {
   private final String text;
