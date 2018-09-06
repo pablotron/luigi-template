@@ -1,0 +1,12 @@
+Luigi Template
+==============
+
+Installation
+------------
+
+    mvn package
+
+Tests
+-----
+
+    mvn test
