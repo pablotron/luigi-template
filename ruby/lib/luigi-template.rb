@@ -1,10 +1,288 @@
+#
+# = Luigi Template
+#
+# == Overview
+#
+# Luigi Template is a string template library.
+#
+# == Examples
+#
+# Simple usage example:
+#
+#     # load luigi template
+#     require 'luigi-template'
+#
+#     # create template
+#     tmpl = Luigi::Template.new('hello %{name}')
+#
+#     # run template and print result
+#     puts tmpl.run({
+#       name: 'Paul'
+#     })
+#
+#     # prints "hello Paul"
+#
+# You can also filter values in templates, using the pipe symbol:
+#
+#     # create template that converts name to upper-case
+#     tmpl = Luigi::Template.new('hello %{name | uc}')
+#
+#     # run template and print result
+#     puts tmpl.run({
+#       name: 'Paul'
+#     })
+#
+#     # prints "hello PAUL"
+#
+# Filters can be chained:
+#
+#     # create template that converts name to upper-case and then
+#     # strips leading and trailing whitespace
+#     tmpl = Luigi::Template.new('hello %{name | uc | trim}')
+#
+#     # run template and print result
+#     puts tmpl.run({
+#       name: '   Paul    '
+#     })
+#
+#     # prints "hello PAUL"
+#
+# Filters can take arguments:
+#
+#     # create template that converts name to lowercase and then
+#     # calculates the SHA-1 digest of the result
+#     tmpl = Luigi::Template.new('hello %{name | lc | hash sha1}')
+#
+#     # run template and print result
+#     puts tmpl.run({
+#       name: 'Paul',
+#     })
+#
+#     # prints "hello a027184a55211cd23e3f3094f1fdc728df5e0500"
+#
+# You can define custom global filters:
+#
+#     # create custom global filter named 'foobarify'
+#     Luigi::FILTERS[:foobarify] = proc { |s| "foo-#{s}-bar" }
+#
+#     # create template which uses custom "foobarify" filter
+#     tmpl = Luigi::Template.new('hello %{name | foobarify}')
+#
+#     # run template and print result
+#     puts tmpl.run({
+#       name: 'Paul'
+#     })
+#
+#     # prints "hello foo-Paul-bar"
+#
+# Or define custom filters for a template:
+#
+#     # create template with custom filters rather than global filters
+#     tmpl = Luigi::Template.new('hello %{name | reverse}', {
+#       reverse: proc { |s| s.reverse }
+#     })
+#
+#     # run template and print result
+#     puts tmpl.run({
+#       name: 'Paul',
+#     })
+#
+#     # prints "hello luaP"
+#
+# Your custom filters can accept arguments, too:
+#
+#     # create custom global filter named 'foobarify'
+#     Luigi::FILTERS[:wrap] = proc { |s, args|
+#       case args.length
+#       when 2
+#         '(%s, %s, %s)' % [args[0], s, args[1]]
+#       when 1
+#         '(%s in %s)' % [s, args[0]]
+#       when 0
+#         s
+#       else
+#         raise 'invalid argument count'
+#       end
+#     }
+#
+#     # create template that uses custom "wrap" filter
+#     tmpl = Luigi::Template.new('sandwich: %{meat | wrap slice heel}, taco: %{meat | wrap shell}')
+#
+#     # run template and print result
+#     puts tmpl.run({
+#       meat: 'chicken'
+#     })
+#
+#     # prints "sandwich: (slice, chicken, heel), taco: (chicken in shell)"
+#
+# == Filters
+#
+# The following filters are built-in:
+#
+# * +uc+: Convert string to upper-case.
+# * +lc+: Convert string to lower-case.
+# * +h+: HTML-escape string.
+# * +u+: URL-escape string.
+# * +json+: JSON-encode value.
+# * +trim+: Strip leading and trailing whitespace from string.
+# * +base64+: Base64-encode value.
+# * +hash+: Hash value.  Requires hash algorithm parameter (ex:
+#   "sha1", "md5", etc).
+#
+# You can add your own global filters, like so:
+#
+#     # create custom global filter named 'foobarify'
+#     Luigi::FILTERS[:foobarify] = proc { |s| "foo-#{s}-bar" }
+#
+#     # create template which uses custom "foobarify" filter
+#     tmpl = Luigi::Template.new('hello %{name | foobarify}')
+#
+#     # run template and print result
+#     puts tmpl.run({
+#       name: 'Paul'
+#     })
+#
+#     # prints "hello foo-Paul-bar"
+#
+# == License
+#
+# Copyright 2007-2018 Paul Duncan ({pabs@pablotron.org}[mailto:pabs@pablotron.org])
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#
+
 require 'uri'
 require 'json'
 require 'openssl'
 # require 'pp'
 
 #
-# String templating library.  See Luigi::Template for details.
+# Top-level Luigi namespace.  See Luigi::Template for details.
+#
+# Example:
+#
+#     # load luigi template
+#     require 'luigi-template'
+#
+#     # create template
+#     tmpl = Luigi::Template.new('hello %{name}')
+#
+#     # run template and print result
+#     puts tmpl.run({
+#       name: 'Paul'
+#     })
+#
+#     # prints "hello Paul"
+#
+# You can also filter values in templates, using the pipe symbol:
+#
+#     # create template that converts name to upper-case
+#     tmpl = Luigi::Template.new('hello %{name | uc}')
+#
+#     # run template and print result
+#     puts tmpl.run({
+#       name: 'Paul'
+#     })
+#
+#     # prints "hello PAUL"
+#
+# Filters can be chained:
+#
+#     # create template that converts name to upper-case and then
+#     # strips leading and trailing whitespace
+#     tmpl = Luigi::Template.new('hello %{name | uc | trim}')
+#
+#     # run template and print result
+#     puts tmpl.run({
+#       name: '   Paul    '
+#     })
+#
+#     # prints "hello PAUL"
+#
+# Filters can take arguments:
+#
+#     # create template that converts name to lowercase and then
+#     # calculates the SHA-1 digest of the result
+#     tmpl = Luigi::Template.new('hello %{name | lc | hash sha1}')
+#
+#     # run template and print result
+#     puts tmpl.run({
+#       name: 'Paul',
+#     })
+#
+#     # prints "hello a027184a55211cd23e3f3094f1fdc728df5e0500"
+#
+# You can define custom global filters:
+#
+#     # create custom global filter named 'foobarify'
+#     Luigi::FILTERS[:foobarify] = proc { |s| "foo-#{s}-bar" }
+#
+#     # create template which uses custom "foobarify" filter
+#     tmpl = Luigi::Template.new('hello %{name | foobarify}')
+#
+#     # run template and print result
+#     puts tmpl.run({
+#       name: 'Paul'
+#     })
+#
+#     # prints "hello foo-Paul-bar"
+#
+# Or define custom filters for a template:
+#
+#     # create template with custom filters rather than global filters
+#     tmpl = Luigi::Template.new('hello %{name | reverse}', {
+#       reverse: proc { |s| s.reverse }
+#     })
+#
+#     # run template and print result
+#     puts tmpl.run({
+#       name: 'Paul',
+#     })
+#
+#     # prints "hello luaP"
+#
+# Your custom filters can accept arguments, too:
+#
+#     # create custom global filter named 'foobarify'
+#     Luigi::FILTERS[:wrap] = proc { |s, args|
+#       case args.length
+#       when 2
+#         '(%s, %s, %s)' % [args[0], s, args[1]]
+#       when 1
+#         '(%s in %s)' % [s, args[0]]
+#       when 0
+#         s
+#       else
+#         raise 'invalid argument count'
+#       end
+#     }
+#
+#     # create template that uses custom "wrap" filter
+#     tmpl = Luigi::Template.new('sandwich: %{meat | wrap slice heel}, taco: %{meat | wrap shell}')
+#
+#     # run template and print result
+#     puts tmpl.run({
+#       meat: 'chicken'
+#     })
+#
+#     # prints "sandwich: (slice, chicken, heel), taco: (chicken in shell)"
 #
 module Luigi
   #

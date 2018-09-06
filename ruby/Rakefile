@@ -6,8 +6,8 @@ Rake::TestTask.new do |t|
 end
 
 RDoc::Task.new :docs do |t|
-  t.main = "README.mkd"
-  t.rdoc_files.include('README.mkd', 'lib/*.rb')
+  t.main = "lib/luigi-template.rb"
+  t.rdoc_files.include('lib/*.rb')
   t.rdoc_dir = 'docs'
   # t.options << "--all"
 end
