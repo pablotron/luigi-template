@@ -20,6 +20,30 @@ The API documentation is available online at the following URL:
 
 https://pablotron.github.io/luigi-template/ruby/
 
+You can generate the API documentation in the `docs/` directory via
+[RDoc][], like so:
+
+    # generate API documentation in docs/ directory
+    rake docs
+
+Tests
+-----
+You can run the [minitest][] test suite via [Rake][], like so:
+
+    # run the test suite
+    rake test
+
+To generate a [JUnit][]-compatible XML report, install the
+[minitest-junit][] gem and then do the following:
+
+    # run the test suite and generate a junit-compatible report.xml
+    rake test TESTOPTS=--junit
+
+Author
+------
+Paul Duncan ([pabs@pablotron.org][me])<br/>
+https://pablotron.org/
+
 License
 -------
 Copyright 2007-2018 Paul Duncan ([pabs@pablotron.org][me])
@@ -44,3 +68,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 [me]: mailto:pabs@pablotron.org
+[minitest]: https://github.com/seattlerb/minitest
+[minitest-junit]: https://github.com/aespinosa/minitest-junit
+[RDoc]: https://github.com/ruby/rdoc
+[Rake]: https://github.com/ruby/rake
