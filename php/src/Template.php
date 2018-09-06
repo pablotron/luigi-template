@@ -728,8 +728,7 @@ Filters::init();
  *        }
  *     };
  *
- *     # create template that converts name to lowercase and then
- *     # calculates the SHA-1 digest of the result
+ *     # create template which uses custom "wrap" filter"
  *     $tmpl = new Template('sandwich: %{meat | wrap slice heel}, taco: %{meat | wrap shell}');
  *
  *     # run template and print result
