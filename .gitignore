@@ -3,3 +3,4 @@ php/vendor
 php/docs/
 php/examples/*
 ruby/*.gem
+ruby/docs/

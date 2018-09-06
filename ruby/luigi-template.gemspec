@@ -10,10 +10,5 @@ Gem::Specification.new do |s|
   s.email       = 'pabs@pablotron.org'
   s.homepage    = 'https://github.com/pablotron/luigi-template'
   s.license     = 'MIT'
-  s.files       = %w{
-    README.mkd
-    Rakefile
-    test/test_template.rb
-    lib/luigi-template.rb
-  }
+  s.files       = Dir['{lib,test}/*.rb'] + %w{README.mkd Rakefile}
 end

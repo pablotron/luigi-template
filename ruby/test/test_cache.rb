@@ -1,7 +1,7 @@
 require 'minitest/autorun'
 require 'luigi-template'
 
-class TemplateTest < MiniTest::Test
+class CacheTest < MiniTest::Test
   def test_cache
     cache = Luigi::Cache.new({
       foo: 'foo%{bar}',

@@ -1,7 +1,15 @@
 require 'rake/testtask'
+require 'rdoc/task'
 
 Rake::TestTask.new do |t|
   t.libs << 'test'
+end
+
+RDoc::Task.new :docs do |t|
+  t.main = "README.mkd"
+  t.rdoc_files.include('README.mkd', 'lib/*.rb')
+  t.rdoc_dir = 'docs'
+  # t.options << "--all"
 end
 
 desc "Run tests"

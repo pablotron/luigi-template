@@ -1,7 +1,7 @@
 require 'minitest/autorun'
 require 'luigi-template'
 
-class TemplateTest < MiniTest::Test
+class FiltersTest < MiniTest::Test
   def test_filter
     r = Luigi::Template.run('foo%{bar|h}', {
       bar: '<',
