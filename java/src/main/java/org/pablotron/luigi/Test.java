@@ -3,7 +3,7 @@ package org.pablotron.luigi;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.pablotron.luigi.LuigiError;
+import org.pablotron.luigi.errors.LuigiError;
 import org.pablotron.luigi.Filter;
 import org.pablotron.luigi.Template;
 import org.pablotron.luigi.Cache;

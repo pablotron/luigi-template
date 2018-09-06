@@ -1,15 +1,13 @@
 import java.util.Map;
 import java.util.HashMap;
 
-import org.pablotron.luigi.LuigiError;
 import org.pablotron.luigi.Template;
 import org.pablotron.luigi.Filter;
-import org.pablotron.luigi.FilterError;
+import org.pablotron.luigi.errors.LuigiError;
+import org.pablotron.luigi.errors.FilterError;
 import org.pablotron.luigi.ResultHandler;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 

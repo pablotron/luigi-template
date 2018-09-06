@@ -8,7 +8,7 @@ import org.pablotron.luigi.actions.Action;
 import org.pablotron.luigi.actions.FilterAction;
 import org.pablotron.luigi.actions.TextAction;
 import org.pablotron.luigi.FilterReference;
-import org.pablotron.luigi.LuigiError;
+import org.pablotron.luigi.errors.LuigiError;
 
 public final class Parser {
   private static final Pattern RE_ACTION = Pattern.compile(

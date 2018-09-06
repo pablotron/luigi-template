@@ -1,4 +1,4 @@
-package org.pablotron.luigi;
+package org.pablotron.luigi.errors;
 
 public class LuigiError extends Exception {
   public LuigiError(final String message) {

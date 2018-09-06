@@ -4,10 +4,7 @@ import java.util.HashMap;
 import org.pablotron.luigi.Template;
 import org.pablotron.luigi.Filter;
 import org.pablotron.luigi.Cache;
-import org.pablotron.luigi.LuigiError;
-import org.pablotron.luigi.UnknownKeyError;
-import org.pablotron.luigi.UnknownFilterError;
-import org.pablotron.luigi.UnknownTemplateError;
+import org.pablotron.luigi.errors.LuigiError;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;

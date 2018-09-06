@@ -1,4 +1,4 @@
-package org.pablotron.luigi;
+package org.pablotron.luigi.errors;
 
 public class UnknownKeyError extends UnknownEntryError {
   public UnknownKeyError(final String name) {

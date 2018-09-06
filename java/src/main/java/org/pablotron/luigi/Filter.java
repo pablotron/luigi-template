@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.HashMap;
 import java.nio.charset.Charset;
 
+import org.pablotron.luigi.errors.FilterError;
+
 public final class Filter {
   public interface Handler {
     public String filter(

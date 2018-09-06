@@ -4,9 +4,9 @@ import java.util.Map;
 import org.pablotron.luigi.actions.Action;
 import org.pablotron.luigi.FilterReference;
 import org.pablotron.luigi.Filter;
-import org.pablotron.luigi.LuigiError;
-import org.pablotron.luigi.UnknownFilterError;
-import org.pablotron.luigi.UnknownKeyError;
+import org.pablotron.luigi.errors.LuigiError;
+import org.pablotron.luigi.errors.UnknownFilterError;
+import org.pablotron.luigi.errors.UnknownKeyError;
 
 public final class FilterAction implements Action {
   private final String key;
