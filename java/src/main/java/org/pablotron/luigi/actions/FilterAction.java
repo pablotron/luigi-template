@@ -5,6 +5,8 @@ import org.pablotron.luigi.actions.Action;
 import org.pablotron.luigi.FilterReference;
 import org.pablotron.luigi.Filter;
 import org.pablotron.luigi.LuigiError;
+import org.pablotron.luigi.UnknownFilterError;
+import org.pablotron.luigi.UnknownKeyError;
 
 public final class FilterAction implements Action {
   private final String key;
@@ -21,7 +23,7 @@ public final class FilterAction implements Action {
   ) throws LuigiError {
     // check for key
     if (!args.containsKey(key))
-      throw new LuigiError("unknown key: " + key);
+      throw new UnknownKeyError(key);
 
     // reduce value to result
     String r = args.get(key);
@@ -29,7 +31,7 @@ public final class FilterAction implements Action {
       // get/check filter
       Filter.Handler f = filters.get(this.filters[i].name);
       if (f == null)
-        throw new LuigiError("unknown filter: " + this.filters[i].name);
+        throw new UnknownFilterError(this.filters[i].name);
 
       // run filter 
       r = f.filter(r, this.filters[i].args, args);

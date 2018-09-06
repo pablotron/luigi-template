@@ -47,4 +47,38 @@ public final class Template {
   public String toString() {
     return this.template;
   }
+
+  public static String run(
+    final String template,
+    final Map<String, String> args
+  ) throws LuigiError {
+    return Template.run(template, args, Filter.FILTERS);
+  }
+
+  public static void run(
+    final String template,
+    final Map<String, String> args,
+    final ResultHandler r
+  ) throws LuigiError {
+    run(template, args, Filter.FILTERS, r);
+  }
+
+  public static String run(
+    final String template,
+    final Map<String, String> args,
+    final Map<String, Filter.Handler> filters
+  ) throws LuigiError {
+    final Template t = new Template(template, filters);
+    return t.run(args);
+  }
+
+  public static void run(
+    final String template,
+    final Map<String, String> args,
+    final Map<String, Filter.Handler> filters,
+    final ResultHandler r
+  ) throws LuigiError {
+    final Template t = new Template(template, filters);
+    t.run(args, r);
+  }
 };

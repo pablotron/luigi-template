@@ -36,6 +36,13 @@ public final class TemplateTest {
     assertEquals("foofoo", r);
   }
 
+  @Test
+  public void testStaticRun() throws LuigiError {
+    final String r = Template.run("foo%{bar}", TEST_ARGS);
+
+    assertEquals("foofoo", r);
+  }
+
   private static final class TestResultHandler implements ResultHandler {
     private final StringBuilder sb;
     public TestResultHandler(final StringBuilder sb) {
@@ -54,6 +61,17 @@ public final class TemplateTest {
     final TestResultHandler rh = new TestResultHandler(sb);
 
     t.run(TEST_ARGS, rh);
+    final String r = sb.toString();
+
+    assertEquals("foofoo", sb.toString());
+  }
+
+  @Test
+  public void testStaticResultHandler() throws LuigiError {
+    final StringBuilder sb = new StringBuilder();
+    final TestResultHandler rh = new TestResultHandler(sb);
+
+    Template.run("foo%{bar}", TEST_ARGS, rh);
     final String r = sb.toString();
 
     assertEquals("foofoo", sb.toString());

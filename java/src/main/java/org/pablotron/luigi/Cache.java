@@ -28,24 +28,25 @@ public final class Cache {
     final String key,
     final Map<String, String> args
   ) throws LuigiError {
-    Template t;
+    // run template with args
+    return get(key).run(args);
+  }
 
-    if (templates.containsKey(key)) {
-      // get template
-      t = templates.get(key);
-    } else {
+  public boolean containsKey(final String key) {
+    return strings.containsKey(key);
+  }
+
+  public Template get(final String key) throws LuigiError {
+    if (!templates.containsKey(key)) {
       // make sure template exists
       if (!strings.containsKey(key))
-        throw new LuigiError("unknown template: " + key);
+        throw new UnknownTemplateError(key);
 
-      // create template
-      t = new Template(strings.get(key), filters);
-
-      // cache template
-      templates.put(key, t);
+      // create and cache template
+      templates.put(key, new Template(strings.get(key), filters));
     }
 
-    // run template with args
-    return t.run(args);
+    // get template
+    return templates.get(key);
   }
 };
