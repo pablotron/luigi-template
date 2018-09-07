@@ -90,8 +90,7 @@ public final class Filter {
             if (b < 32 || b > 126) {
               r.append(String.format("&#%d;", toUInt(b)));
             } else {
-              final byte bs[] = {b};
-              r.append(new String(bs));
+              r.append((char) b);
             }
           }
         }
@@ -176,8 +175,7 @@ public final class Filter {
           case '.':
           case '~':
             // unreserved character
-            final byte bs[] = {b};
-            r.append(new String(bs));
+            r.append((char) b);
             break;
           case ' ':
             r.append("+");
