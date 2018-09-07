@@ -1,6 +1,7 @@
 package org.pablotron.luigi;
 
 import java.util.Map;
+
 import org.pablotron.luigi.Parser;
 import org.pablotron.luigi.Filter;
 import org.pablotron.luigi.errors.LuigiError;
