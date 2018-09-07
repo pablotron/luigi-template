@@ -14,7 +14,7 @@ public final class Template {
   /**
    * Luigi template version.
    */
-  public static final String VERSION = "0.4.0";
+  public static final String VERSION = "0.4.2";
 
   private final String template;
   private final Action actions[];
