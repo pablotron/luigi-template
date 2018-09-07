@@ -10,13 +10,19 @@ import org.pablotron.luigi.actions.TextAction;
 import org.pablotron.luigi.FilterReference;
 import org.pablotron.luigi.errors.LuigiError;
 
+/**
+ * Internal template string parser.
+ */
 public final class Parser {
+  /**
+   * Template string parsing regular expression.
+   */
   private static final Pattern RE_ACTION = Pattern.compile(
     // match opening brace
-    "%\\{" + 
-      
+    "%\\{" +
+
       // match optional whitespace
-      "\\s*" + 
+      "\\s*" +
 
       // match key
       // "(?<key>[^\\s\\|\\}]+)" +
@@ -28,10 +34,10 @@ public final class Parser {
 
       // match optional whitespace
       "\\s*" +
-    
+
     // match closing brace
     "\\}" +
-    
+
     // or match up all non-% chars or a single % char
     // "| (?<text>[^%]* | %)",
     "| ([^%]* | %)",
@@ -39,30 +45,48 @@ public final class Parser {
     Pattern.COMMENTS
   );
 
+  /**
+   * Filter string parsing regular expression.
+   */
   private static final Pattern RE_FILTER = Pattern.compile(
     // match filter name
     // "(?<name>\\S+)" +
     "(\\S+)" +
-  
+
     // match filter arguments (optional)
     // "(?<args>(\\s*\\S+)*)" +
     "((\\s*\\S+)*)" +
-  
+
     // optional trailing whitespace
     "\\s*",
 
     Pattern.COMMENTS
   );
 
+  /**
+   * Filter chain delimiter.
+   */
   private static final Pattern RE_DELIM_FILTERS = Pattern.compile(
     "\\s*\\|\\s*"
   );
 
+  /**
+   * Filter arguments delimiter.
+   */
   private static final Pattern RE_DELIM_ARGS = Pattern.compile(
     "\\s+"
   );
 
-  public static Action[] parse_template(
+  /**
+   * Parse given template string into an array of actions.
+   *
+   * @param template Template string.
+   *
+   * @return Array of actions.
+   *
+   * @throws LuigiError If parsing fails.
+   */
+  protected static Action[] parse_template(
     final String template
   ) throws LuigiError {
     final ArrayList<Action> r = new ArrayList<Action>();
@@ -73,7 +97,7 @@ public final class Parser {
     while (m.find()) {
       // String key = m.group("key");
       final String key = m.group(1);
-      
+
       if (key != null && key.length() > 0) {
         // r.add(new FilterAction(key, parse_filters(m.group("filters"))));
         r.add(new FilterAction(key, parse_filters(m.group(2))));
@@ -89,7 +113,16 @@ public final class Parser {
 
   private static final String[] NO_ARGS = {};
 
-  public static FilterReference[] parse_filters(
+  /**
+   * Parse given filter string into an array of filter references.
+   *
+   * @param filters_str Filter chain string.
+   *
+   * @return Array of FilterReferences.
+   *
+   * @throws LuigiError If parsing fails.
+   */
+  protected static FilterReference[] parse_filters(
     final String filters_str
   ) throws LuigiError {
     final ArrayList<FilterReference> r = new ArrayList<FilterReference>();

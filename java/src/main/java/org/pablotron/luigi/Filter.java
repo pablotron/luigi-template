@@ -6,8 +6,30 @@ import java.nio.charset.Charset;
 
 import org.pablotron.luigi.errors.FilterError;
 
+/**
+ * Default filter set and filter handler callback.
+ */
 public final class Filter {
-  public interface Handler {
+  /**
+   * Hide constructor to prevent instantiation.
+   */
+  private Filter() {}
+
+  /**
+   * Filter handler callback interface.
+   */
+  public static interface Handler {
+    /**
+     * Called during template expansion to apply the given filter.
+     *
+     * @param val String value.
+     * @param args Array of filter arguments specified in template string.
+     * @param row Complete map of arguments passed during template run.
+     *
+     * @return Filtered value as a string.
+     *
+     * @throws FilterError If an error occurs during filtering.
+     */
     public String filter(
       String val,
       String args[],
@@ -15,15 +37,48 @@ public final class Filter {
     ) throws FilterError;
   };
 
-  protected static byte[] getBytes(final String val, final String args[]) {
+  /**
+   * Convert given string value to byte array.
+   *
+   * If the length of the argument array is greater than zero, then the
+   * first argument is used as the name of a character set for the input
+   * string.
+   *
+   * @param val String value.
+   * @param args Array of filter arguments.  May be empty.
+   *
+   * @return Byte array.
+   */
+  private static byte[] getBytes(final String val, final String args[]) {
     final Charset charset = (args.length > 0) ? Charset.forName(args[0]) :  Charset.defaultCharset();
     return val.getBytes(charset);
   }
 
-  protected static int toUInt(final byte b) {
+  /**
+   * Convert signed byte to unsigned integer.
+   *
+   * @param b Signed byte value.
+   *
+   * @return Unsigned integer.
+   */
+  private static int toUInt(final byte b) {
     return (b < 0) ? (256 + b) : b;
   }
 
+  /**
+   * Default filter set.
+   *
+   * The default filters are as follows:
+   *
+   * <ul>
+   *   <li><code>uc</code>: Convert string to upper-case.</li>
+   *   <li><code>lc</code>: Convert string to lower-case.</li>
+   *   <li><code>h</code>: HTML-escape string.</li>
+   *   <li><code>u</code>: URL-escape string.</li>
+   *   <li><code>trim</code>: Strip leading and trailing whitespace from string.</li>
+   *   <!-- li><code>base64</code>: Base64-encode value.</li -->
+   * </ul>
+   */
   public static Map<String, Handler> FILTERS = new HashMap<String, Handler>() {{
     put("null", new Handler() {
       public String filter(String val, String args[], Map<String, String> row) {
