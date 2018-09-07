@@ -1,3 +1,5 @@
+package org.pablotron.luigi.tests;
+
 import java.util.Map;
 import java.util.HashMap;
 
@@ -40,4 +42,15 @@ public final class CacheTest {
     final Cache cache = new Cache(TEST_TEMPLATES, TEST_FILTERS);
     assertEquals("foo-custom-foo-filter-foo", cache.run("foo-custom", TEST_ARGS));
   }
+
+  @Test
+  public void testCacheGetWithResultHandler() throws LuigiError {
+    final Cache cache = new Cache(TEST_TEMPLATES);
+    final StringBuilder sb = new StringBuilder();
+    final TestResultHandler rh = new TestResultHandler(sb);
+    cache.run("foo", TEST_ARGS, rh);
+
+    assertEquals("foofoofoo", sb.toString());
+  }
+
 };

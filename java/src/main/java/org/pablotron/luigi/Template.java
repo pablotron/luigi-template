@@ -76,9 +76,9 @@ public final class Template {
     final String template,
     final Map<String, String> args,
     final Map<String, Filter.Handler> filters,
-    final ResultHandler r
+    final ResultHandler rh
   ) throws LuigiError {
     final Template t = new Template(template, filters);
-    t.run(args, r);
+    t.run(args, rh);
   }
 };

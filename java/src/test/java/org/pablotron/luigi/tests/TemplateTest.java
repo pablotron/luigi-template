@@ -1,3 +1,5 @@
+package org.pablotron.luigi.tests;
+
 import java.util.Map;
 import java.util.HashMap;
 
@@ -40,17 +42,6 @@ public final class TemplateTest {
 
     assertEquals("foofoo", r);
   }
-
-  private static final class TestResultHandler implements ResultHandler {
-    private final StringBuilder sb;
-    public TestResultHandler(final StringBuilder sb) {
-      this.sb = sb;
-    }
-
-    public void append(final String s) {
-      sb.append(s);
-    }
-  };
 
   @Test
   public void testResultHandler() throws LuigiError {
