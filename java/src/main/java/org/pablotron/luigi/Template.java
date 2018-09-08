@@ -1,6 +1,7 @@
 package org.pablotron.luigi;
 
 import java.util.Map;
+import java.io.IOException;
 
 import org.pablotron.luigi.Parser;
 import org.pablotron.luigi.Filter;
@@ -66,11 +67,11 @@ public final class Template {
   }
 
   /**
-   * Run this template with given arguments, and pass each result chunks
-   * to the given result handler.
+   * Run this template with given arguments, and pass each chunk of
+   # the result to the given output object.
    *
    * @param args Template arguments.
-   * @param rh Result handler.
+   * @param out Appendable output interface.
    *
    * @throws UnknownKeyError If a key specified in the template does not exist.
    * @throws UnknownFilterError If a filter specified in the template does not exist.
@@ -78,10 +79,10 @@ public final class Template {
    */
   public void run(
     final Map<String, String> args,
-    final ResultHandler r
-  ) throws LuigiError {
+    final Appendable out
+  ) throws LuigiError, IOException {
     for (Action a: this.actions) {
-      r.append(a.run(this.filters, args));
+      out.append(a.run(this.filters, args));
     }
   }
 
@@ -127,9 +128,9 @@ public final class Template {
   public static void run(
     final String template,
     final Map<String, String> args,
-    final ResultHandler rh
-  ) throws LuigiError {
-    run(template, args, Filter.FILTERS, rh);
+    final Appendable out
+  ) throws LuigiError, IOException {
+    run(template, args, Filter.FILTERS, out);
   }
 
   /**
@@ -156,13 +157,13 @@ public final class Template {
   }
 
   /**
-   * Create and run template with given arguments, filters, and result
-   * handler.
+   * Create and run template with given arguments, filters, and
+   * appendable.
    *
    * @param template Template string.
    * @param args Template arguments.
    * @param filters Template filters.
-   * @param rh Result handler that result chunks are passed to.
+   * @param out Appendable output interface.
    *
    * @throws UnknownKeyError If a key specified in the template does not exist.
    * @throws UnknownFilterError If a filter specified in the template does not exist.
@@ -172,9 +173,9 @@ public final class Template {
     final String template,
     final Map<String, String> args,
     final Map<String, Filter.Handler> filters,
-    final ResultHandler rh
-  ) throws LuigiError {
+    final Appendable out
+  ) throws LuigiError, IOException {
     final Template t = new Template(template, filters);
-    t.run(args, rh);
+    t.run(args, out);
   }
 };

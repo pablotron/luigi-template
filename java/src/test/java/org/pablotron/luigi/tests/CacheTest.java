@@ -2,6 +2,7 @@ package org.pablotron.luigi.tests;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.io.IOException;
 
 import org.pablotron.luigi.Template;
 import org.pablotron.luigi.Filter;
@@ -31,20 +32,20 @@ public final class CacheTest {
   }};
 
   @Test
-  public void testCache() throws LuigiError {
+  public void testCache() throws LuigiError, IOException {
     final Cache cache = new Cache(TEST_TEMPLATES);
 
     assertEquals("foofoofoo", cache.run("foo", TEST_ARGS));
   }
 
   @Test
-  public void testCacheWithCustomFilters() throws LuigiError {
+  public void testCacheWithCustomFilters() throws LuigiError, IOException {
     final Cache cache = new Cache(TEST_TEMPLATES, TEST_FILTERS);
     assertEquals("foo-custom-foo-filter-foo", cache.run("foo-custom", TEST_ARGS));
   }
 
   @Test
-  public void testCacheGetWithResultHandler() throws LuigiError {
+  public void testCacheGetWithResultHandler() throws LuigiError, IOException {
     final Cache cache = new Cache(TEST_TEMPLATES);
     final StringBuilder sb = new StringBuilder();
     final TestResultHandler rh = new TestResultHandler(sb);

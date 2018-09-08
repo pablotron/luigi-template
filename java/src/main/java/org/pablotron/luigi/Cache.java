@@ -2,6 +2,7 @@ package org.pablotron.luigi;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.io.IOException;
 
 import org.pablotron.luigi.Filter;
 import org.pablotron.luigi.Template;
@@ -54,7 +55,7 @@ public final class Cache {
   public String run(
     final String key,
     final Map<String, String> args
-  ) throws LuigiError {
+  ) throws LuigiError, IOException {
     // run template with args
     return get(key).run(args);
   }
@@ -65,17 +66,17 @@ public final class Cache {
    *
    * @param key Template key.
    * @param args Template arguments map.
-   * @param rh Result handler.
+   * @param out Appendable output interface.
    *
    * @throws UnknownTemplateError if the given template does not exist.
    */
   public void run(
     final String key,
     final Map<String, String> args,
-    final ResultHandler rh
-  ) throws LuigiError {
+    final Appendable out
+  ) throws LuigiError, IOException {
     // run template with args and result handler
-    get(key).run(args, rh);
+    get(key).run(args, out);
   }
 
   /**

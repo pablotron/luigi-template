@@ -5,7 +5,6 @@ import org.pablotron.luigi.Template;
 import org.pablotron.luigi.Filter;
 import org.pablotron.luigi.errors.LuigiError;
 import org.pablotron.luigi.errors.FilterError;
-import org.pablotron.luigi.ResultHandler;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;

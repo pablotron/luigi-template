@@ -2,10 +2,10 @@ package org.pablotron.luigi.tests;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.io.IOException;
 
 import org.pablotron.luigi.Template;
 import org.pablotron.luigi.errors.LuigiError;
-import org.pablotron.luigi.ResultHandler;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -44,7 +44,7 @@ public final class TemplateTest {
   }
 
   @Test
-  public void testResultHandler() throws LuigiError {
+  public void testResultHandler() throws LuigiError, IOException {
     final Template t = new Template("foo%{bar}");
     final StringBuilder sb = new StringBuilder();
     final TestResultHandler rh = new TestResultHandler(sb);
@@ -56,7 +56,7 @@ public final class TemplateTest {
   }
 
   @Test
-  public void testStaticResultHandler() throws LuigiError {
+  public void testStaticResultHandler() throws LuigiError, IOException {
     final StringBuilder sb = new StringBuilder();
     final TestResultHandler rh = new TestResultHandler(sb);
 
