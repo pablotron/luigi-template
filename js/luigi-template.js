@@ -13,13 +13,8 @@
  * Template object.
  * @class
  */
-LuigiTemplate = (function() {
+var Luigi = (function() {
   "use strict";
-
-  /**
-   * Version of Luigi Template.
-   */
-  var VERSION = '0.4.2';
 
   // Array.each polyfill
   var each = (function() {
@@ -99,70 +94,6 @@ LuigiTemplate = (function() {
       fn(m);
   }
 
-  /**
-   * Default filter set.
-   *
-   * The default filters are:
-   * * `uc`: Upper-case string value.
-   * * `lc`: Lower-case string value.
-   * * `s`: Pluralize a value by returning `""` if the value is 1, and `"s"` otherwise.
-   * * `length`: Get the length of an array.
-   * * `trim`: Trim leading and trailing whitespace from a string.
-   * * `h`: HTML-escape a string value.
-   * * `u`: URL-escape a string value.
-   * * `json`: JSON-encode a value.
-   */
-  var FILTERS = {
-    uc: function(v) {
-      return (v || '').toUpperCase();
-    },
-
-    lc: function(v) {
-      return (v || '').toLowerCase();
-    },
-
-    s: function(v) {
-      return (v == 1) ? '' : 's';
-    },
-
-    length: function(v) {
-      return (v || '').length;
-    },
-
-    trim: function(v) {
-      return trim(v);
-    },
-
-    h: (function() {
-      var LUT = {
-        '"': '&quot;',
-        "'": '&apos;',
-        '>': '&gt;',
-        '<': '&lt;',
-        '&': '&amp;'
-      };
-
-      return function(v) {
-        if (v === undefined || v === null)
-          return '';
-
-        return v.toString().replace(/(['"<>&])/g, function(s) {
-          return LUT[s];
-        });
-      };
-    })(),
-
-    u: function(s) {
-      return encodeURIComponent(s || '').replace('%20', '+').replace(/[!'()*]/g, function(c) {
-        return '%' + c.charCodeAt(0).toString(16);
-      });
-    },
-
-    json: function(v) {
-      return JSON.stringify(v);
-    },
-  };
-
   var RES = {
     actions: /%\{\s*([^\s\|\}]+)\s*((\s*\|(\s*[^\s\|\}]+)+)*)\s*\}|([^%]+|%)/g,
     filter:   /(\S+)((\s*\S+)*)\s*/,
@@ -177,14 +108,14 @@ LuigiTemplate = (function() {
       if (m[1]) {
         // action
         r.push({
-          type: 'action',
+          is_text: false,
           key: m[1],
           filters: parse_filters(m[2])
         });
       } else {
         // text
         r.push({
-          type: 'text',
+          is_text: true,
           text: m[5]
         });
       }
@@ -217,6 +148,80 @@ LuigiTemplate = (function() {
   }
 
   /**
+   * Luigi Template namespace.
+   */
+  var Luigi = {
+    /**
+     * Version of Luigi Template.
+     */
+    VERSION: '0.4.2',
+
+    /**
+     * Default filter set.
+     *
+     * The default filters are:
+     * * `uc`: Upper-case string value.
+     * * `lc`: Lower-case string value.
+     * * `s`: Pluralize a value by returning `""` if the value is 1, and `"s"` otherwise.
+     * * `length`: Get the length of an array.
+     * * `trim`: Trim leading and trailing whitespace from a string.
+     * * `h`: HTML-escape a string value.
+     * * `u`: URL-escape a string value.
+     * * `json`: JSON-encode a value.
+     */
+    FILTERS: {
+      uc: function(v) {
+        return (v || '').toUpperCase();
+      },
+
+      lc: function(v) {
+        return (v || '').toLowerCase();
+      },
+
+      s: function(v) {
+        return (v == 1) ? '' : 's';
+      },
+
+      length: function(v) {
+        return (v || '').length;
+      },
+
+      trim: function(v) {
+        return trim(v);
+      },
+
+      h: (function() {
+        var LUT = {
+          '"': '&quot;',
+          "'": '&apos;',
+          '>': '&gt;',
+          '<': '&lt;',
+          '&': '&amp;'
+        };
+
+        return function(v) {
+          if (v === undefined || v === null)
+            return '';
+
+          return v.toString().replace(/(['"<>&])/g, function(s) {
+            return LUT[s];
+          });
+        };
+      })(),
+
+      u: function(s) {
+        return encodeURIComponent(s || '').replace('%20', '+').replace(/[!'()*]/g, function(c) {
+          return '%' + c.charCodeAt(0).toString(16);
+        });
+      },
+
+      json: function(v) {
+        return JSON.stringify(v);
+      },
+    },
+  };
+
+  /**
    * Create a new Template instance.
    *
    * @param s {string} Template string (required).
@@ -224,10 +229,10 @@ LuigiTemplate = (function() {
    *
    * @constructor
    */
-  function init(s, filters) {
-    this.s = s;
-    this.filters = filters || FILTERS;
-    this.actions = parse_template(s);
+  Luigi.Template = function(template, filters) {
+    this.s = template;
+    this.filters = filters || Luigi.FILTERS;
+    this.actions = parse_template(template);
   };
 
   /**
@@ -237,17 +242,17 @@ LuigiTemplate = (function() {
    *
    * @returns {string} Result of applying arguments to template.
    */
-  function run(o) {
+  Luigi.Template.prototype.run = function(args) {
     var i, l, f, fs, me = this;
 
     // debug
     // print(JSON.stringify(this.actions));
 
     return map(this.actions, function(row) {
-      if (row.type == 'text') {
+      if (row.is_text === true) {
         return row.text;
-      } else if (row.type == 'action') {
-        if (!(row.key in o)) {
+      } else {
+        if (!(row.key in args)) {
           throw new Error('unknown key: ' + row.key);
         }
 
@@ -256,14 +261,11 @@ LuigiTemplate = (function() {
             throw new Error('unknown filter: ' + f.name);
           }
 
-          return me.filters[f.name](r, f.args, o, me);
-        }, o[row.key]);
-      } else {
-        /* never reached */
-        throw new Error('BUG: invalid type: ' + row.type);
+          return me.filters[f.name](r, f.args, args, me);
+        }, args[row.key]);
       }
     }).join('');
-  }
+  };
 
   function get_inline_template(key) {
     // get script element
@@ -275,12 +277,6 @@ LuigiTemplate = (function() {
     return e.innerText || '';
   }
 
-  // declare constructor
-  var T = init;
-
-  // declare run method
-  T.prototype.run = run;
-
   /**
    * Create a new template cache.
    *
@@ -289,9 +285,9 @@ LuigiTemplate = (function() {
    *
    * @constructor
    */
-  T.Cache = function(templates, filters, try_dom) {
+  Luigi.Cache = function(templates, filters, try_dom) {
     this.templates = templates;
-    this.filters = filters || FILTERS;
+    this.filters = filters || Luigi.FILTERS;
     this.try_dom = !!try_dom;
     this.cache = {};
   };
@@ -304,7 +300,7 @@ LuigiTemplate = (function() {
    *
    * @returns {string} Result of applying arguments to template.
    */
-  T.Cache.prototype.run = function(key, args) {
+  Luigi.Cache.prototype.run = function(key, args) {
     if (!(key in this.cache)) {
       var s = null;
 
@@ -319,7 +315,7 @@ LuigiTemplate = (function() {
       }
 
       // cache template
-      this.cache[key] = new T(s, this.filters);
+      this.cache[key] = new Luigi.Template(s, this.filters);
     }
 
     // run template
@@ -335,30 +331,26 @@ LuigiTemplate = (function() {
    *
    * @returns {Cache} Template cache.
    */
-  T.cache = function(templates, filters) {
-    return new T.Cache(templates, filters || FILTERS);
+  Luigi.cache = function(templates, filters) {
+    return new Luigi.Cache(templates, filters || Luigi.FILTERS);
   }
 
   // declare domcache constructor
-  T.DOMCache = function() {
+  Luigi.DOMCache = function() {
     this.cache = {};
   };
 
   // domcache run method
-  T.DOMCache.prototype.run = function(key, args) {
+  Luigi.DOMCache.prototype.run = function(key, args) {
     if (!(key in this.cache))
-      this.cache[key] = new T(get_inline_template(key));
+      this.cache[key] = new Luigi.Template(get_inline_template(key));
 
     // run template
     return this.cache[key].run(args);
   };
 
   // create DOMCache singleton
-  T.dom = new T.DOMCache();
-
-  // expose filters and version
-  T.FILTERS = FILTERS;
-  T.VERSION = VERSION;
+  Luigi.dom = new Luigi.DOMCache();
 
   /**
    * Create and run template with given template string, parameters, and
@@ -370,10 +362,18 @@ LuigiTemplate = (function() {
    *
    * @returns {string} Result of applying arguments to template.
    */
-  T.run = function(template, args, filters) {
-    return new T(template, filters).run(args);
+  Luigi.run = function(template, args, filters) {
+    return new Luigi.Template(template, filters).run(args);
   };
 
   // expose interface
-  return T;
+  return Luigi;
 }());
+
+// backwards compatibility
+var LuigiTemplate = Luigi.Template;
+LuigiTemplate.prototype.Cache = Luigi.Cache;
+LuigiTemplate.run = Luigi.run;
+LuigiTemplate.FILTERS = Luigi.FILTERS;
+LuigiTemplate.Cache = Luigi.Cache;
+LuigiTemplate.cache = Luigi.cache;
