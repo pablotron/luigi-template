@@ -300,8 +300,8 @@ LuigiTemplate = (function() {
       var s = null;
 
       if (key in this.templates) {
-        // get template from constructor templates
-        s = this.templates[key].join('');
+        s = this.templates[key];
+        s = (s.constructor === Array) ? s.join('') : s;
       } else if (this.try_dom) {
         // get source from inline script tag
         s = get_inline_template(key);
@@ -316,6 +316,10 @@ LuigiTemplate = (function() {
     // run template
     return this.cache[key].run(args);
   };
+
+  T.cache = function(args) {
+    return new T.Cache(args);
+  }
 
   // declare domcache constructor
   T.DOMCache = function() {

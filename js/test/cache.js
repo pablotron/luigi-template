@@ -4,6 +4,18 @@
 
   it('cache', function() {
     var cache = new LuigiTemplate.Cache({
+      foo: 'foo%{bar}',
+    });
+
+    var r = cache.run('foo', {
+      bar: 'foo',
+    });
+
+    assert.equal(r, 'foofoo');
+  });
+
+  it('cache with array', function() {
+    var cache = new LuigiTemplate.Cache({
       foo: ['foo%{bar}'],
     });
 
@@ -13,6 +25,19 @@
 
     assert.equal(r, 'foofoo');
   });
+
+  it('cache singleton', function() {
+    var cache = LuigiTemplate.cache({
+      foo: 'foo%{bar}',
+    });
+
+    var r = cache.run('foo', {
+      bar: 'foo',
+    });
+
+    assert.equal(r, 'foofoo');
+  });
+
 
   it('cache with custom filters', function() {
     var cache = new LuigiTemplate.Cache({
