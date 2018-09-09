@@ -10,8 +10,7 @@
  */
 
 /**
- * Template object.
- * @class
+ * Luigi Template namespace.
  */
 var Luigi = (function() {
   "use strict";
@@ -369,11 +368,3 @@ var Luigi = (function() {
   // expose interface
   return Luigi;
 }());
-
-// backwards compatibility
-var LuigiTemplate = Luigi.Template;
-LuigiTemplate.prototype.Cache = Luigi.Cache;
-LuigiTemplate.run = Luigi.run;
-LuigiTemplate.FILTERS = Luigi.FILTERS;
-LuigiTemplate.Cache = Luigi.Cache;
-LuigiTemplate.cache = Luigi.cache;

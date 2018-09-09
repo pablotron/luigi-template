@@ -67,7 +67,7 @@
     expect: 'length of bar: 3'
   }].forEach(function(row) {
     it('default filter: ' + row.filter, function() {
-      assert.equal(Luigi.run(row.template, row.args), row.expect);
+      assert.equal(LuigiTemplate.run(row.template, row.args), row.expect);
     });
   });
 })();

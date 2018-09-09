@@ -3,7 +3,7 @@
   var assert = chai.assert;
 
   it('cache', function() {
-    var cache = new Luigi.Cache({
+    var cache = new LuigiTemplate.Cache({
       foo: 'foo%{bar}',
     });
 
@@ -15,7 +15,7 @@
   });
 
   it('cache with array', function() {
-    var cache = new Luigi.Cache({
+    var cache = new LuigiTemplate.Cache({
       foo: ['foo%{bar}'],
     });
 
@@ -27,7 +27,7 @@
   });
 
   it('cache singleton', function() {
-    var cache = Luigi.cache({
+    var cache = LuigiTemplate.cache({
       foo: 'foo%{bar}',
     });
 
@@ -40,7 +40,7 @@
 
 
   it('cache with custom filters', function() {
-    var cache = Luigi.cache({
+    var cache = LuigiTemplate.cache({
       foo: ['foo%{bar | cache-barify}'],
     }, {
       'cache-barify': function(s) {

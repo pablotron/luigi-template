@@ -4,7 +4,7 @@
 
   it('unknown key error', function() {
     assert.throws(function() {
-      var r = Luigi.run('foo%{unknown-key}', {
+      var r = LuigiTemplate.run('foo%{unknown-key}', {
         bar: 'foo',
       });
     }, Error, /^unknown key/);
@@ -12,7 +12,7 @@
 
   it('unknown filter error', function() {
     assert.throws(function() {
-      var r = Luigi.run('foo%{bar | unknown-filter}', {
+      var r = LuigiTemplate.run('foo%{bar | unknown-filter}', {
         bar: 'foo',
       });
     }, Error, /^unknown filter/);
@@ -20,7 +20,7 @@
 
   it('unknown template error', function() {
     assert.throws(function() {
-      var cache = new Luigi.Cache({
+      var cache = new LuigiTemplate.Cache({
         foo: [
           'foo%{bar}',
         ],

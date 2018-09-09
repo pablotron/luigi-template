@@ -3,14 +3,14 @@
   var assert = chai.assert;
 
   it('filter', function() {
-    var t = new Luigi.Template('foo%{bar|h}'),
+    var t = new LuigiTemplate('foo%{bar|h}'),
         r = t.run({ bar: '<' });
 
     assert.equal(r, 'foo&lt;');
   });
 
   it('filter chain', function() {
-    var r = Luigi.run('foo%{bar|uc|lc}', {
+    var r = LuigiTemplate.run('foo%{bar|uc|lc}', {
       bar: 'foo'
     });
 
@@ -18,11 +18,11 @@
   });
 
   it('custom global filter', function() {
-    Luigi.FILTERS.barify = function(s) {
+    LuigiTemplate.FILTERS.barify = function(s) {
       return 'bar-' + s + '-bar';
     };
 
-    var r = Luigi.run('foo%{bar | barify}', {
+    var r = LuigiTemplate.run('foo%{bar | barify}', {
       bar: 'foo'
     });
 
@@ -30,7 +30,7 @@
   });
 
   it('custom template filter', function() {
-    var r = Luigi.run('foo%{bar | barify}', {
+    var r = LuigiTemplate.run('foo%{bar | barify}', {
       bar: 'foo'
     }, {
       barify: function(s) {
@@ -42,7 +42,7 @@
   });
 
   it('filter args', function() {
-    var r = Luigi.run('foo%{bar | wrap bar}', {
+    var r = LuigiTemplate.run('foo%{bar | wrap bar}', {
       bar: 'foo'
     }, {
       wrap: function(s, args) {

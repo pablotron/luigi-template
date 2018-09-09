@@ -20,7 +20,7 @@ Usage
 A minimal template:
 
     // create template
-    var t = new LuigiTemplate('hello %{name}');
+    var t = new Luigi.Template('hello %{name}');
 
     // run template, print result to console
     console.log(t.run({
@@ -30,10 +30,10 @@ A minimal template:
     // prints "hello Paul"
 
 If you have a template that you only need to run one time, you can use
-the `LuigiTemplate.run()` singleton to run it, like this:
+the `Luigi.run()` singleton to run it, like this:
 
     // create and run template in one shot
-    var r = LuigiTemplate.run('hello %{name}', {
+    var r = Luigi.run('hello %{name}', {
       name: 'Paul',
     });
 
@@ -50,7 +50,7 @@ Here is the template from above, with the name value HTML-escaped using
 a built-in filter:
 
     // create template that prints hello and the HTML-escaped name
-    var t = new LuigiTemplate('hello %{name | h}');
+    var t = new Luigi.Template('hello %{name | h}');
 
     // run template, print result to console
     console.log(t.run({
@@ -74,15 +74,15 @@ The built-in templates are:
 You can create your own custom filters, too.
 
 The easiest way to create your own custom filter is to add it to the set
-of global filters (`LuigiTemplate.FILTERS`), like so:
+of global filters (`Luigi.FILTERS`), like so:
 
     // add global template filter
-    LuigiTemplate.FILTERS.barify = function(s) {
+    Luigi.FILTERS.barify = function(s) {
       return 'bar-' + s + '-bar';
     };
 
     // create template that uses custom global filter
-    var t = new LuigiTemplate('hello %{name | barify | h}');
+    var t = new Luigi.Template('hello %{name | barify | h}');
 
     // run template, print result to console
     console.log(t.run({
@@ -93,10 +93,10 @@ of global filters (`LuigiTemplate.FILTERS`), like so:
 
 You can also create a custom filter and limit it to a particular
 template by passing a custom filter hash as the second parameter to the
-`LuigiTemplate` constructor, like this:
+`Luigi.Template` constructor, like this:
 
     // create template with custom template-specific filter
-    var t = new LuigiTemplate('hello %{name | barify | h}', {
+    var t = new Luigi.Template('hello %{name | barify | h}', {
       barify: function(s) {
         return 'bar-' + s + '-bar';
       },
@@ -113,7 +113,7 @@ You can pass arguments to your custom filters.  Here's an example:
 
     // create template with custom template-specific filter named
     // "wrap", which wraps the value in the given filter parameters
-    var t = new LuigiTemplate('hello %{name | wrap head tail | h}', {
+    var t = new Luigi.Template('hello %{name | wrap head tail | h}', {
       wrap: function(s, args) {
         if (args.length == 2) {
           return [args[0], s, args[1]].join('-';
@@ -143,7 +143,7 @@ that running a template from the cache is fast too.
 Here's how you create a template cache:
 
     // create template cache with a single template
-    var cache = LuigiTemplate.cache({
+    var cache = Luigi.cache({
       hello: 'hello %{name | uc | h}'
     });
 
@@ -158,7 +158,7 @@ Template caches use their own set of custom filters by passing a custom
 filter hash when creating a template cache:
 
     // create template cache with a custom filter named "reverse"
-    var cache = LuigiTemplate.cache({
+    var cache = Luigi.cache({
       hello: 'hello %{name | uc | reverse | h}'
     }, {
       reverse: function(s) {
@@ -179,14 +179,14 @@ A template cache is also a convenient way to group all of the templates
 in a script together:
 
     // add global filter named "reverse"
-    LuigiTemplate.FILTERS.reverse = function(s) {
+    Luigi.FILTERS.reverse = function(s) {
       var cs = (s || '').split('');
       cs.reverse();
       return cs.join('');
     };
 
     // create template cache
-    var TEMPLATES = LuigiTemplate.cache({
+    var TEMPLATES = Luigi.cache({
       upper:    'hello %{name | uc | h}',
       reverse:  'hello %{name | reverse | h}',
     });
