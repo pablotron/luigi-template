@@ -40,14 +40,15 @@
 
 
   it('cache with custom filters', function() {
-    var cache = new LuigiTemplate.Cache({
-      foo: ['foo%{bar | barify}'],
+    var cache = LuigiTemplate.cache({
+      foo: ['foo%{bar | cache-barify}'],
     }, {
-      barify: function(s) {
+      'cache-barify': function(s) {
         return 'bar-' + s + '-bar';
       },
     });
 
+    // run template from cache, get result
     var r = cache.run('foo', {
       bar: 'foo',
     });

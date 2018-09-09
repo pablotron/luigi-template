@@ -63,17 +63,8 @@ The built-in templates are:
 
 * `uc`: Upper-case string.
 * `lc`: Lower-case string.
-* `s`: Returns `""` if the value is 1, and `"s"` otherwise. Used to
-  pluralize values.  Example:
-
-    console.log(LuigiTemplate.run('a: a%{a|s}, b: b%{b|s}, c: c%{c|s}'', {
-      a: 0,
-      b: 1,
-      c: 2,
-    }));
-
-    // prints "a: as, b: b, c: cs"
-
+* `s`: Pluralize a value by returning `""` if the value is 1, and
+  `"s"` otherwise.
 * `length`: Get the length of an array.
 * `trim`: Trim leading and trailing whitespace from a string.
 * `h`: HTML-escape a string value.
@@ -100,8 +91,8 @@ of global filters (`LuigiTemplate.FILTERS`), like so:
 
     // prints "hello bar-&lt;Paul&gt;-bar"
 
-You can also create a custom filters and limit it to a particular
-template by passing a hash as the second parameter to the
+You can also create a custom filter and limit it to a particular
+template by passing a custom filter hash as the second parameter to the
 `LuigiTemplate` constructor, like this:
 
     // create template with custom template-specific filter
@@ -118,8 +109,7 @@ template by passing a hash as the second parameter to the
 
     // prints "hello bar-&lt;Paul&gt;-bar"
 
-You can pass arguments to your custom filters as well.  Here's an
-example:
+You can pass arguments to your custom filters.  Here's an example:
 
     // create template with custom template-specific filter named
     // "wrap", which wraps the value in the given filter parameters
@@ -166,6 +156,27 @@ Here's how you create a template cache:
     }));
 
     // prints "hello &lt;PAUL%gt;"
+
+Finally, template caches use their own set of custom filters by passing
+the custom custom when creating a template cache:
+
+    // create template cache with a custom filter named "reverse"
+    var cache = LuigiTemplate.cache({
+      hello: 'hello %{name | uc | reverse | h}'
+    }, {
+      reverse: function(s) {
+        var cs = (s || '').split('');
+        cs.reverse();
+        return cs.join('');
+      },
+    });
+
+    // run template, print result to console
+    console.log(cache.run('hello', {
+      name: '<Paul>',
+    }));
+
+    // prints "hello %gt;LUAP&lt;"
 
 Documentation
 -------------

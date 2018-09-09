@@ -288,8 +288,9 @@ LuigiTemplate = (function() {
   T.prototype.run = run;
 
   // declare cache constructor
-  T.Cache = function(templates, try_dom) {
+  T.Cache = function(templates, filters, try_dom) {
     this.templates = templates;
+    this.filters = filters || FILTERS;
     this.try_dom = !!try_dom;
     this.cache = {};
   };
@@ -310,15 +311,15 @@ LuigiTemplate = (function() {
       }
 
       // cache template
-      this.cache[key] = new T(s);
+      this.cache[key] = new T(s, this.filters);
     }
 
     // run template
     return this.cache[key].run(args);
   };
 
-  T.cache = function(args) {
-    return new T.Cache(args);
+  T.cache = function(args, filters) {
+    return new T.Cache(args, filters || FILTERS);
   }
 
   // declare domcache constructor
