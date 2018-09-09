@@ -173,6 +173,12 @@ LuigiTemplate = (function() {
       };
     })(),
 
+    u: function(s) {
+      return encodeURIComponent(s || '').replace('%20', '+').replace(/[!'()*]/g, function(c) {
+        return '%' + c.charCodeAt(0).toString(16);
+      });
+    },
+
     json: function(v) {
       return JSON.stringify(v);
     },
@@ -247,10 +253,15 @@ LuigiTemplate = (function() {
       if (row.type == 'text') {
         return row.text;
       } else if (row.type == 'action') {
-        if (!row.key in o)
-          throw new Error('missing key: ' + row.key)
+        if (!(row.key in o)) {
+          throw new Error('unknown key: ' + row.key);
+        }
 
         return reduce(row.filters, function(r, f) {
+          if (!(f.name in me.filters)) {
+            throw new Error('unknown filter: ' + f.name);
+          }
+
           return me.filters[f.name](r, f.args, o, me);
         }, o[row.key]);
       } else {
@@ -295,7 +306,7 @@ LuigiTemplate = (function() {
         // get source from inline script tag
         s = get_inline_template(key);
       } else {
-        throw new Error('unknown key: ' + key);
+        throw new Error('unknown template: ' + key);
       }
 
       // cache template
