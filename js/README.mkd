@@ -1,0 +1,213 @@
+Luigi Template
+==============
+
+Overview
+--------
+Tiny JavaScript string templating library.
+
+Features
+--------
+
+* Filters, with common filters built-in.
+* Template caching.
+* Small: Less than 4k minified (see `luigi-template.min.js`),
+* Stand-alone: No external dependencies (no jQuery, etc),
+* Compatible: Works in browsers as old as IE9
+* MIT-licensed
+
+Usage
+-----
+A minimal template:
+
+    // create template
+    var t = new LuigiTemplate('hello %{name}');
+
+    // run template, print result to console
+    console.log(t.run({
+      name: 'Paul',
+    }));
+
+    // prints "hello Paul"
+
+If you have a template that you only need to run one time, you can use
+the `LuigiTemplate.run()` singleton to run it, like this:
+
+    // create and run template in one shot
+    var r = LuigiTemplate.run('hello %{name}', {
+      name: 'Paul',
+    });
+
+    // print result to console
+    console.log(r);
+
+    // prints "hello Paul"
+
+Templates parameters can be modified by filters.  Filters are applied to
+a parameter value by appending a `|` (pipe) character, followed by the
+filter name.
+
+Here is the template from above, with the name value HTML-escaped using
+a built-in filter:
+
+    // create template that prints hello and the HTML-escaped name
+    var t = new LuigiTemplate('hello %{name | h}');
+
+    // run template, print result to console
+    console.log(t.run({
+      name: '<Paul>',
+    }));
+
+    // prints "hello &lt;Paul&gt;"
+
+The built-in templates are:
+
+* `uc`: Upper-case string.
+* `lc`: Lower-case string.
+* `s`: Returns `""` if the value is 1, and `"s"` otherwise. Used to
+  pluralize values.  Example:
+
+    console.log(LuigiTemplate.run('a: a%{a|s}, b: b%{b|s}, c: c%{c|s}'', {
+      a: 0,
+      b: 1,
+      c: 2,
+    }));
+
+    // prints "a: as, b: b, c: cs"
+
+* `length`: Get the length of an array.
+* `trim`: Trim leading and trailing whitespace from a string.
+* `h`: HTML-escape a string value.
+* `u`: URL-escape a string value.
+* `json`: JSON-encode a value.
+
+You can create your own custom filters, too.
+
+The easiest way to create your own custom filter is to add it to the set
+of global filters (`LuigiTemplate.FILTERS`), like so:
+
+    // add global template filter
+    LuigiTemplate.FILTERS.barify = function(s) {
+      return 'bar-' + s + '-bar';
+    };
+
+    // create template that uses custom global filter
+    var t = new LuigiTemplate('hello %{name | barify | h}');
+
+    // run template, print result to console
+    console.log(t.run({
+      name: '<Paul>',
+    }));
+
+    // prints "hello bar-&lt;Paul&gt;-bar"
+
+You can also create a custom filters and limit it to a particular
+template by passing a hash as the second parameter to the
+`LuigiTemplate` constructor, like this:
+
+    // create template with custom template-specific filter
+    var t = new LuigiTemplate('hello %{name | barify | h}', {
+      barify: function(s) {
+        return 'bar-' + s + '-bar';
+      },
+    });
+
+    // run template, print result to console
+    console.log(t.run({
+      name: '<Paul>',
+    }));
+
+    // prints "hello bar-&lt;Paul&gt;-bar"
+
+You can pass arguments to your custom filters as well.  Here's an
+example:
+
+    // create template with custom template-specific filter named
+    // "wrap", which wraps the value in the given filter parameters
+    var t = new LuigiTemplate('hello %{name | wrap head tail | h}', {
+      wrap: function(s, args) {
+        if (args.length == 2) {
+          return [args[0], s, args[1]].join('-';
+        } else if (args.length == 1) {
+          return [args[0], s, args[0]].join('-');
+        } else {
+          return s;
+        }
+      },
+    });
+
+    // run template, print result to console
+    console.log(t.run({
+      name: '<Paul>',
+    }));
+
+    // prints "hello head-&lt;Paul&gt;-tail"
+
+If you have a lot of separate templates, or a few large templates,
+then it's a good idea to use a template cache.
+
+A template cache will create templates as they are needed (also known as
+"lazy initialization"), so the page or application loads quickly.  A
+template cache also caches instantiated (that is, created) templates for
+future use, so using templates from the cache is fast, too.
+
+Finally, template caches serve as a good repository for all of the
+templates in a script.
+
+Here's how you create a template cache:
+
+    // create template cache with a single template
+    var cache = LuigiTemplate.cache({
+      hello: 'hello %{name | uc | h}'
+    });
+
+    // run template, print result to console
+    console.log(cache.run('hello', {
+      name: '<Paul>',
+    }));
+
+    // prints "hello &lt;PAUL%gt;"
+
+Documentation
+-------------
+*TODO*
+
+Tests
+-----
+This `test/` directory contains the JavaScript test suite for the
+JavaScript implementation of [Luigi Template][], written in [Mocha][]
+and [Chai].
+
+To run the test suite, load `test/test.html` in a browser.
+
+Author
+------
+Paul Duncan ([pabs@pablotron.org][me])<br/>
+https://pablotron.org/
+
+License
+-------
+Copyright 2014-2018 Paul Duncan ([pabs@pablotron.org][me])
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+[Luigi Template]: https://github.com/pablotron/luigi-template
+[me]: mailto:pabs@pablotron.org
+[Mocha]: https://mochajs.org/
+[Chai]: http://www.chaijs.com/
