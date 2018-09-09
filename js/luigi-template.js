@@ -5,7 +5,7 @@
  * @author Paul Duncan <pabs@pablotron.org>
  * @license MIT
  * @copyright 2010-2018 Paul Duncan (pabs@pablotron.org)
- * @version 0.4.2
+ * @version 0.5.0
  *
  */
 
@@ -153,7 +153,7 @@ var Luigi = (function() {
     /**
      * Version of Luigi Template.
      */
-    VERSION: '0.4.2',
+    VERSION: '0.5.0',
 
     /**
      * Default filter set.

@@ -7,6 +7,7 @@
 var LuigiTemplate = Luigi.Template;
 LuigiTemplate.prototype.Cache = Luigi.Cache;
 LuigiTemplate.run = Luigi.run;
+LuigiTemplate.VERSION = Luigi.VERSION;
 LuigiTemplate.FILTERS = Luigi.FILTERS;
 LuigiTemplate.Cache = Luigi.Cache;
 LuigiTemplate.cache = Luigi.cache;

@@ -15,6 +15,17 @@ Features:
 * Compatible: Works in browsers as old as IE9
 * MIT-licensed
 
+Installation
+------------
+Minify `luigi-template.js` using your minifier of choice, and drop it
+into your source tree.  I like [jsmin][], personally:
+
+    jsmin luigi-template.js > luigi-template.min.js
+
+*Note:* If you are upgrading from a pre-0.5.0 version of Luigi Template,
+be sure to include `luigi-compat.js` as well.  See the *Changes in
+0.5.0* section below for details.
+
 Usage
 -----
 A minimal template:
@@ -216,6 +227,23 @@ implementation of [Luigi Template][], written in [Mocha][] and [Chai].
 
 To run the test suite, load `test/test.html` in a browser.
 
+Changes in 0.5.0
+----------------
+Version 0.5.0 of Luigi Template changes the namespace from
+`LuigiTemplate` to `Luigi`, which has the following effects:
+
+* old (0.4.x): `new LuigiTemplate(...)`, new (0.5): `new Luigi.Template(...)`
+* old (0.4.x): `LuigiTemplate.run(...)`, new: (0.5): `Luigi.run(...)`
+* old (0.4.x): `LuigiTemplate.VERSION`, new (0.5): `Luigi.VERSION`
+* old (0.4.x): `LuigiTemplate.FILTERS`, new: (0.5): `Luigi.FILTERS`
+* old (0.4.x): `new LuigiTemplate.Cache(...)`, new: (0.5): `Luigi.cache(...)` (recommended) or `new Luigi.Cache(...)`
+
+If you have an existing system that you cannot make changes to, you can
+include `luigi-compat.js` as a compatibility shim.  Tests for the
+compatibility shim are available in `test/compat/`.
+
+*Note:* The compatibility shim will disappear in a future release.
+
 Author
 ------
 Paul Duncan ([pabs@pablotron.org][me])<br/>
@@ -245,6 +273,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 [pipe]: https://en.wikipedia.org/wiki/Pipeline_(Unix)
+[jsmin]: https://www.crockford.com/javascript/jsmin.html
 [Luigi Template]: https://github.com/pablotron/luigi-template
 [me]: mailto:pabs@pablotron.org
 [Mocha]: https://mochajs.org/
