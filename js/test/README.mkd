@@ -1,0 +1,8 @@
+This directory contains the test suite for the JavaScript implementation
+of [Luigi Template][], written in [Mocha][] and [Chai].
+
+To run the tests, load [test.html][] in a browser.
+
+[Luigi Template]: https://github.com/pablotron/luigi-template
+[Mocha]: https://mochajs.org/
+[Chai]: http://www.chaijs.com/
