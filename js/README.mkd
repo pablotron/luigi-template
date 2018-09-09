@@ -136,12 +136,9 @@ If you have a lot of separate templates, or a few large templates,
 then it's a good idea to use a template cache.
 
 A template cache will create templates as they are needed (also known as
-"lazy initialization"), so the page or application loads quickly.  A
-template cache also caches instantiated (that is, created) templates for
-future use, so using templates from the cache is fast, too.
-
-Finally, template caches serve as a good repository for all of the
-templates in a script.
+"lazy initialization"), so the script loads quickly.  A template cache
+also caches instantiated (that is, created) templates for future use, so
+that using templates repeatedly from the cache is fast as well.
 
 Here's how you create a template cache:
 
@@ -157,8 +154,8 @@ Here's how you create a template cache:
 
     // prints "hello &lt;PAUL%gt;"
 
-Finally, template caches use their own set of custom filters by passing
-the custom custom when creating a template cache:
+Template caches use their own set of custom filters by passing a custom
+filter hash when creating a template cache:
 
     // create template cache with a custom filter named "reverse"
     var cache = LuigiTemplate.cache({
@@ -178,15 +175,39 @@ the custom custom when creating a template cache:
 
     // prints "hello %gt;LUAP&lt;"
 
+A template cache is also a convenient way to group all of the templates
+in a script together:
+
+    // add global filter named "reverse"
+    LuigiTemplate.FILTERS.reverse: function(s) {
+      var cs = (s || '').split('');
+      cs.reverse();
+      return cs.join('');
+    };
+
+    // create template cache
+    var TEMPLATES = LuigiTemplate.cache({
+      upper:    'hello %{name | uc | h}',
+      reverse:  'hello %{name | reverse | h}',
+    });
+
+    // run the upper and reverse templates above and populate
+    // the elements #upper and #reverse with their respective
+    // result
+    ['upper', 'reverse'].forEach(function(id) {
+      getElementByid(id).innerHTML = TEMPLATES.run(id, {
+        name: '<Paul>',
+      });
+    });
+
 Documentation
 -------------
 *TODO*
 
 Tests
 -----
-This `test/` directory contains the JavaScript test suite for the
-JavaScript implementation of [Luigi Template][], written in [Mocha][]
-and [Chai].
+This `test/` directory contains the test suite for the JavaScript
+implementation of [Luigi Template][], written in [Mocha][] and [Chai].
 
 To run the test suite, load `test/test.html` in a browser.
 
