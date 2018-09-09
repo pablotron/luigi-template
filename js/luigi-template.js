@@ -1,57 +1,24 @@
 /**
- * luigi-template.js
- * =================
+ * Luigi Template: Simple JavaScript string templating library inspired by
+ * Unix pipes.
  *
- * Links
- * -----
- * * Contact: Paul Duncan (<pabs@pablotron.org>)
- * * Home Page: <https://github.com/pablotron/luigi-template>
+ * @author Paul Duncan <pabs@pablotron.org>
+ * @license MIT
+ * @copyright 2010-2018 Paul Duncan (pabs@pablotron.org)
+ * @version 0.4.2
  *
- * Overview
- * --------
- * Tiny client-side JavaScript templating library.
- *
- * Why?  This script is:
- *
- *   * less than 4k minified (see `luigi-template.min.js`),
- *
- *   * has no external dependencies (no jQuery/YUI/Sensha),
- *
- *   * works in browsers as old as IE8, and
- *
- *   * MIT licensed (use for whatever, I don't care)
- *
- * Usage
- * -----
- * TODO
- *
- * License
- * -------
- * Copyright 2014-2018 Paul Duncan ([pabs@pablotron.org][me])
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the
- * "Software"), to deal in the Software without restriction, including
- * without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so, subject to
- * the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
- * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
- * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
+ */
+
+/**
+ * Template object.
+ * @class
  */
 LuigiTemplate = (function() {
   "use strict";
 
+  /**
+   * Version of Luigi Template.
+   */
   var VERSION = '0.4.2';
 
   // Array.each polyfill
@@ -132,7 +99,19 @@ LuigiTemplate = (function() {
       fn(m);
   }
 
-  // list of built-in filters
+  /**
+   * Default filter set.
+   *
+   * The default filters are:
+   * * `uc`: Upper-case string value.
+   * * `lc`: Lower-case string value.
+   * * `s`: Pluralize a value by returning `""` if the value is 1, and `"s"` otherwise.
+   * * `length`: Get the length of an array.
+   * * `trim`: Trim leading and trailing whitespace from a string.
+   * * `h`: HTML-escape a string value.
+   * * `u`: URL-escape a string value.
+   * * `json`: JSON-encode a value.
+   */
   var FILTERS = {
     uc: function(v) {
       return (v || '').toUpperCase();
@@ -237,12 +216,27 @@ LuigiTemplate = (function() {
     return r;
   }
 
+  /**
+   * Create a new Template instance.
+   *
+   * @param s {string} Template string (required).
+   * @param filters {hash} Filters (optional).
+   *
+   * @constructor
+   */
   function init(s, filters) {
     this.s = s;
     this.filters = filters || FILTERS;
     this.actions = parse_template(s);
   };
 
+  /**
+   * Run template with given parameters.
+   *
+   * @param args {hash} Template parameters (required).
+   *
+   * @returns {string} Result of applying arguments to template.
+   */
   function run(o) {
     var i, l, f, fs, me = this;
 
@@ -287,7 +281,14 @@ LuigiTemplate = (function() {
   // declare run method
   T.prototype.run = run;
 
-  // declare cache constructor
+  /**
+   * Create a new template cache.
+   *
+   * @param templates {hash} name to template map (required).
+   * @param filters {hash} custom filter map (optional).
+   *
+   * @constructor
+   */
   T.Cache = function(templates, filters, try_dom) {
     this.templates = templates;
     this.filters = filters || FILTERS;
@@ -295,7 +296,14 @@ LuigiTemplate = (function() {
     this.cache = {};
   };
 
-  // cache run method
+  /**
+   * Find named template in cache and run it with the given arguments.
+   *
+   * @param key {hash} Template key (required).
+   * @param args {hash} Template run arguments (required).
+   *
+   * @returns {string} Result of applying arguments to template.
+   */
   T.Cache.prototype.run = function(key, args) {
     if (!(key in this.cache)) {
       var s = null;
@@ -318,8 +326,17 @@ LuigiTemplate = (function() {
     return this.cache[key].run(args);
   };
 
-  T.cache = function(args, filters) {
-    return new T.Cache(args, filters || FILTERS);
+  /**
+   * Create a new template cache with the given templates and
+   * (optionally) filters.
+   *
+   * @param templates {hash} name to template map (required).
+   * @param filters {hash} custom filter map (optional).
+   *
+   * @returns {Cache} Template cache.
+   */
+  T.cache = function(templates, filters) {
+    return new T.Cache(templates, filters || FILTERS);
   }
 
   // declare domcache constructor
@@ -343,47 +360,20 @@ LuigiTemplate = (function() {
   T.FILTERS = FILTERS;
   T.VERSION = VERSION;
 
-  // add singleton run
-  T.run = function(s, o, f) {
-    return new T(s, f).run(o);
-  }
+  /**
+   * Create and run template with given template string, parameters, and
+   * (optionally) filters.
+   *
+   * @param template {string} Template parameters (required).
+   * @param args {hash} Template parameters (required).
+   * @param filters {hash} Custom filters (optional).
+   *
+   * @returns {string} Result of applying arguments to template.
+   */
+  T.run = function(template, args, filters) {
+    return new T(template, filters).run(args);
+  };
 
   // expose interface
   return T;
 }());
-
-/*
-You automagically generate the following files:
-
-  * luigi-template.min.js (minified luigi-template.js),
-  * readme.txt (Markdown-formatted documentation), and
-  * readme.html (HTML-formatted documentation)
-
-by using this command:
-
-  grep ^build: luigi-template.js | sed 's/^build://' | ruby
-
-(Requires jsmin, ruby, and markdown).
-
-build: # generate readme.txt
-build: File.write('readme.txt', File.read('luigi-template.js').match(%r{
-build:   # match first opening comment
-build:   ^/\*\*(.*?)\* /
-build:
-build:   # match text
-build:   (.*?)
-build:
-build:   # match first closing comment
-build:   # (note: don't change " /" to "/" or else)
-build:   \* /
-build: }mx)[1].split(/\n/).map { |line|
-build:   # strip leading asterisks
-build:   line.gsub(/^ \* ?/, '')
-build: }.join("\n").strip)
-build:
-build: # generate readme.html
-build: `markdown < readme.txt > readme.html`
-build:
-build: # make luigi-template.min.js
-build: `jsmin < luigi-template.js > luigi-template.min.js`
-*/

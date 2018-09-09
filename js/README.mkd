@@ -3,12 +3,12 @@ Luigi Template
 
 Overview
 --------
-Tiny JavaScript string templating library.
+Simple JavaScript string templating library inspired by [Unix
+pipes][pipe].
 
-Features
---------
-
-* Filters, with common filters built-in.
+Features:
+* Filters via piping, with common filters built-in.
+* Useful built-in filters.
 * Template caching.
 * Small: Less than 4k minified (see `luigi-template.min.js`),
 * Stand-alone: No external dependencies (no jQuery, etc),
@@ -61,8 +61,8 @@ a built-in filter:
 
 The built-in templates are:
 
-* `uc`: Upper-case string.
-* `lc`: Lower-case string.
+* `uc`: Upper-case string value.
+* `lc`: Lower-case string value.
 * `s`: Pluralize a value by returning `""` if the value is 1, and
   `"s"` otherwise.
 * `length`: Get the length of an array.
@@ -138,7 +138,7 @@ then it's a good idea to use a template cache.
 A template cache will create templates as they are needed (also known as
 "lazy initialization"), so the script loads quickly.  A template cache
 also caches instantiated (that is, created) templates for future use, so
-that using templates repeatedly from the cache is fast as well.
+that running a template from the cache is fast too.
 
 Here's how you create a template cache:
 
@@ -179,7 +179,7 @@ A template cache is also a convenient way to group all of the templates
 in a script together:
 
     // add global filter named "reverse"
-    LuigiTemplate.FILTERS.reverse: function(s) {
+    LuigiTemplate.FILTERS.reverse = function(s) {
       var cs = (s || '').split('');
       cs.reverse();
       return cs.join('');
@@ -202,7 +202,12 @@ in a script together:
 
 Documentation
 -------------
-*TODO*
+Usage documentation is available in the *Usage* section above, and API
+documentation is available online at the following URL:
+
+https://pablotron.github.io/luigi-template/
+
+You can also generate the documentation yourself using [jsdoc][].
 
 Tests
 -----
@@ -239,7 +244,9 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+[pipe]: https://en.wikipedia.org/wiki/Pipeline_(Unix)
 [Luigi Template]: https://github.com/pablotron/luigi-template
 [me]: mailto:pabs@pablotron.org
 [Mocha]: https://mochajs.org/
 [Chai]: http://www.chaijs.com/
+[jsdoc]: http://usejsdoc.org/
