@@ -9,9 +9,6 @@
  *
  */
 
-/**
- * Luigi Template namespace.
- */
 var Luigi = (function() {
   "use strict";
 
@@ -149,6 +146,7 @@ var Luigi = (function() {
   /**
    * Luigi Template namespace.
    *
+   * @namespace
    * @global
    */
   var Luigi = {
@@ -156,7 +154,6 @@ var Luigi = (function() {
      * Version of Luigi Template.
      *
      * @constant
-     * @memberof Luigi
      * @default
      */
     VERSION: '0.5.0',
@@ -233,10 +230,10 @@ var Luigi = (function() {
   /**
    * Create a new Template instance.
    *
-   * @constructor
+   * @constructor Luigi.Template
    * @memberof Luigi
    *
-   * @param s {string} Template string (required).
+   * @param template {string} Template string (required).
    * @param filters {hash} Filters (optional).
    */
   Luigi.Template = function(template, filters) {
@@ -266,8 +263,7 @@ var Luigi = (function() {
   /**
    * Run template with given parameters.
    *
-   * @function run
-   * @memberof Template
+   * @function Luigi.Template#run
    *
    * @param args {hash} Template parameters (required).
    * @param fn {function} Callback function (optional).
@@ -306,7 +302,7 @@ var Luigi = (function() {
   /**
    * Create a new template cache.
    *
-   * @constructor
+   * @constructor Luigi.Cache
    * @memberof Luigi
    *
    * @param templates {hash} name to template map (required).
@@ -322,7 +318,7 @@ var Luigi = (function() {
   /**
    * Find named template in cache and run it with the given arguments.
    *
-   * @function Cache#run
+   * @function Luigi.Cache#run
    *
    * @param key {hash} Template key (required).
    * @param args {hash} Template run arguments (required).
@@ -356,8 +352,7 @@ var Luigi = (function() {
    * Create a new template cache with the given templates and
    * (optionally) filters.
    *
-   * @function cache
-   * @memberof Luigi
+   * @function Luigi.cache
    *
    * @param templates {hash} name to template map (required).
    * @param filters {hash} custom filter map (optional).
@@ -389,8 +384,7 @@ var Luigi = (function() {
    * Create and run template with given template string, parameters, and
    * (optionally) filters.
    *
-   * @function run
-   * @memberof Luigi
+   * @function Luigi.run
    *
    * @param template {string} Template parameters (required).
    * @param args {hash} Template parameters (required).
