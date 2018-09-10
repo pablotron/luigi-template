@@ -149,7 +149,7 @@ var Luigi = (function() {
   /**
    * Luigi Template namespace.
    *
-   * @namespace
+   * @global
    */
   var Luigi = {
     /**
