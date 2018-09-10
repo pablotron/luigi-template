@@ -149,6 +149,9 @@ var Luigi = (function() {
    * @namespace Luigi
    * @alias Luigi
    * @global
+   *
+   * @property VERSION {string} Version of Luigi Template.
+   * @property FILTERS {string} Default filter set.
    */
   var Luigi = {
     /**
@@ -322,18 +325,16 @@ var Luigi = (function() {
   };
 
   /**
-   * Find named template in cache and run it with the given arguments.
+   * Find named template in this cache or raise an Error.
    *
-   * @function Luigi.Cache#run
-   * @alias Luigi.Cache#run
+   * @function Luigi.Cache#get
+   * @alias Luigi.Cache#get
    *
    * @param key {hash} Template key (required).
-   * @param args {hash} Template run arguments (required).
-   * @param fn {function} Callback function (optional).
    *
-   * @returns {string} Result of applying arguments to template.
+   * @returns {Template} Template matching given key.
    */
-  Luigi.Cache.prototype.run = function(key, args, fn) {
+  Luigi.Cache.prototype.get = function(key, args, fn) {
     if (!(key in this.cache)) {
       var s = null;
 
@@ -352,7 +353,24 @@ var Luigi = (function() {
     }
 
     // run template
-    return this.cache[key].run(args, fn);
+    return this.cache[key];
+  };
+
+  /**
+   * Find named template in cache and run it with the given arguments.
+   *
+   * @function Luigi.Cache#run
+   * @alias Luigi.Cache#run
+   *
+   * @param key {hash} Template key (required).
+   * @param args {hash} Template run arguments (required).
+   * @param fn {function} Callback function (optional).
+   *
+   * @returns {string} Result of applying arguments to template.
+   */
+  Luigi.Cache.prototype.run = function(key, args, fn) {
+    // get and run template
+    return this.get(key).run(args, fn);
   };
 
   /**
