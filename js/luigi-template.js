@@ -148,15 +148,22 @@ var Luigi = (function() {
 
   /**
    * Luigi Template namespace.
+   *
+   * @namespace
    */
   var Luigi = {
     /**
      * Version of Luigi Template.
+     * @constant
+     * @default
      */
     VERSION: '0.5.0',
 
     /**
      * Default filter set.
+     *
+     * @constant
+     * @default
      *
      * The default filters are:
      * * `uc`: Upper-case string value.
@@ -223,10 +230,10 @@ var Luigi = (function() {
   /**
    * Create a new Template instance.
    *
+   * @constructor
+   *
    * @param s {string} Template string (required).
    * @param filters {hash} Filters (optional).
-   *
-   * @constructor
    */
   Luigi.Template = function(template, filters) {
     this.s = template;
@@ -234,36 +241,51 @@ var Luigi = (function() {
     this.actions = parse_template(template);
   };
 
+  function run_action(action, args, fn, me) {
+    if (action.is_text === true) {
+      return action.text;
+    } else {
+      if (!(action.key in args)) {
+        throw new Error('unknown key: ' + action.key);
+      }
+
+      return reduce(action.filters, function(r, f) {
+        if (!(f.name in me.filters)) {
+          throw new Error('unknown filter: ' + f.name);
+        }
+
+        return me.filters[f.name](r, f.args, args, me);
+      }, args[action.key]);
+    }
+  }
+
   /**
    * Run template with given parameters.
    *
+   * @function Luigi.Template#run
+   *
    * @param args {hash} Template parameters (required).
+   * @param fn {function} Callback function (optional).
    *
    * @returns {string} Result of applying arguments to template.
    */
-  Luigi.Template.prototype.run = function(args) {
+  Luigi.Template.prototype.run = function(args, fn) {
     var i, l, f, fs, me = this;
 
     // debug
     // print(JSON.stringify(this.actions));
 
-    return map(this.actions, function(row) {
-      if (row.is_text === true) {
-        return row.text;
-      } else {
-        if (!(row.key in args)) {
-          throw new Error('unknown key: ' + row.key);
-        }
+    if (fn) {
+      each(this.actions, function(action) {
+        fn(run_action(action, args, fn, me));
+      });
 
-        return reduce(row.filters, function(r, f) {
-          if (!(f.name in me.filters)) {
-            throw new Error('unknown filter: ' + f.name);
-          }
-
-          return me.filters[f.name](r, f.args, args, me);
-        }, args[row.key]);
-      }
-    }).join('');
+      return null;
+    } else {
+      return map(this.actions, function(action) {
+        return run_action(action, args, fn, me);
+      }).join('');
+    }
   };
 
   function get_inline_template(key) {
@@ -279,10 +301,10 @@ var Luigi = (function() {
   /**
    * Create a new template cache.
    *
+   * @constructor
+   *
    * @param templates {hash} name to template map (required).
    * @param filters {hash} custom filter map (optional).
-   *
-   * @constructor
    */
   Luigi.Cache = function(templates, filters, try_dom) {
     this.templates = templates;
@@ -294,12 +316,15 @@ var Luigi = (function() {
   /**
    * Find named template in cache and run it with the given arguments.
    *
+   * @function Luigi.Cache#run
+   *
    * @param key {hash} Template key (required).
    * @param args {hash} Template run arguments (required).
+   * @param fn {function} Callback function (optional).
    *
    * @returns {string} Result of applying arguments to template.
    */
-  Luigi.Cache.prototype.run = function(key, args) {
+  Luigi.Cache.prototype.run = function(key, args, fn) {
     if (!(key in this.cache)) {
       var s = null;
 
@@ -318,12 +343,14 @@ var Luigi = (function() {
     }
 
     // run template
-    return this.cache[key].run(args);
+    return this.cache[key].run(args, fn);
   };
 
   /**
    * Create a new template cache with the given templates and
    * (optionally) filters.
+   *
+   * @function Luigi.cache
    *
    * @param templates {hash} name to template map (required).
    * @param filters {hash} custom filter map (optional).
@@ -355,14 +382,17 @@ var Luigi = (function() {
    * Create and run template with given template string, parameters, and
    * (optionally) filters.
    *
+   * @function Luigi.run
+   *
    * @param template {string} Template parameters (required).
    * @param args {hash} Template parameters (required).
    * @param filters {hash} Custom filters (optional).
+   * @param fn {function} Callback function (optional).
    *
    * @returns {string} Result of applying arguments to template.
    */
-  Luigi.run = function(template, args, filters) {
-    return new Luigi.Template(template, filters).run(args);
+  Luigi.run = function(template, args, filters, fn) {
+    return new Luigi.Template(template, filters).run(args, fn);
   };
 
   // expose interface
