@@ -22,7 +22,7 @@ namespace Pablotron\Luigi;
  *
  * @api
  */
-const VERSION = '0.4.2';
+const VERSION = '0.5.0';
 
 /**
  * Base class for all exceptions raised by Luigi Template.

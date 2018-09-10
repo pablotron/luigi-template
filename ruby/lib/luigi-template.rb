@@ -288,7 +288,7 @@ module Luigi
   #
   # Version of Luigi Template.
   #
-  VERSION = '0.4.2'
+  VERSION = '0.5.0'
 
   #
   # Base class for all errors raised by Luigi Template.
