@@ -68,7 +68,7 @@ a built-in filter:
       name: '<Paul>',
     }));
 
-    // prints "hello &lt;Paul&gt;"
+    // prints "hello &amplt;Paul&amp;gt;"
 
 The built-in templates are:
 
@@ -100,7 +100,7 @@ of global filters (`Luigi.FILTERS`), like so:
       name: '<Paul>',
     }));
 
-    // prints "hello bar-&lt;Paul&gt;-bar"
+    // prints "hello bar-&amp;lt;Paul&amp;gt;-bar"
 
 You can also create a custom filter and limit it to a particular
 template by passing a custom filter hash as the second parameter to the
@@ -118,7 +118,7 @@ template by passing a custom filter hash as the second parameter to the
       name: '<Paul>',
     }));
 
-    // prints "hello bar-&lt;Paul&gt;-bar"
+    // prints "hello bar-&amp;lt;Paul&amp;gt;-bar"
 
 You can pass arguments to your custom filters.  Here's an example:
 
@@ -141,7 +141,7 @@ You can pass arguments to your custom filters.  Here's an example:
       name: '<Paul>',
     }));
 
-    // prints "hello head-&lt;Paul&gt;-tail"
+    // prints "hello head-&amp;lt;Paul&amp;gt;-tail"
 
 If you have a lot of separate templates, or a few large templates,
 then it's a good idea to use a template cache.
