@@ -68,7 +68,7 @@ a built-in filter:
       name: '<Paul>',
     }));
 
-    // prints "hello &amplt;Paul&amp;gt;"
+    // prints "hello &lt;Paul&gt;"
 
 The built-in templates are:
 
@@ -100,7 +100,7 @@ of global filters (`Luigi.FILTERS`), like so:
       name: '<Paul>',
     }));
 
-    // prints "hello bar-&amp;lt;Paul&amp;gt;-bar"
+    // prints "hello bar-&lt;Paul&gt;-bar"
 
 You can also create a custom filter and limit it to a particular
 template by passing a custom filter hash as the second parameter to the
@@ -118,7 +118,7 @@ template by passing a custom filter hash as the second parameter to the
       name: '<Paul>',
     }));
 
-    // prints "hello bar-&amp;lt;Paul&amp;gt;-bar"
+    // prints "hello bar-&lt;Paul&gt;-bar"
 
 You can pass arguments to your custom filters.  Here's an example:
 
@@ -141,7 +141,7 @@ You can pass arguments to your custom filters.  Here's an example:
       name: '<Paul>',
     }));
 
-    // prints "hello head-&amp;lt;Paul&amp;gt;-tail"
+    // prints "hello head-&lt;Paul&gt;-tail"
 
 If you have a lot of separate templates, or a few large templates,
 then it's a good idea to use a template cache.
@@ -216,7 +216,7 @@ Documentation
 Usage documentation is available in the *Usage* section above, and API
 documentation is available online at the following URL:
 
-https://pablotron.github.io/luigi-template/
+[https://pablotron.github.io/luigi-template/][api-docs]
 
 You can also generate the documentation yourself using [jsdoc][].
 
@@ -247,7 +247,7 @@ compatibility shim are available in `test/compat/`.
 Author
 ------
 Paul Duncan ([pabs@pablotron.org][me])<br/>
-https://pablotron.org/
+[https://pablotron.org/][me-web]
 
 License
 -------
@@ -276,6 +276,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [jsmin]: https://www.crockford.com/javascript/jsmin.html
 [Luigi Template]: https://github.com/pablotron/luigi-template
 [me]: mailto:pabs@pablotron.org
+[me-web]: https://pablotron.org/
 [Mocha]: https://mochajs.org/
 [Chai]: http://www.chaijs.com/
 [jsdoc]: http://usejsdoc.org/
+[api-docs]: https://pablotron.github.io/luigi-template/
