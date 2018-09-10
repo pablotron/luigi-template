@@ -146,14 +146,17 @@ var Luigi = (function() {
   /**
    * Luigi Template namespace.
    *
-   * @namespace
+   * @namespace Luigi
+   * @alias Luigi
    * @global
    */
   var Luigi = {
     /**
      * Version of Luigi Template.
      *
+     * @alias Luigi.VERSION
      * @constant
+     * @public
      * @default
      */
     VERSION: '0.5.0',
@@ -161,6 +164,7 @@ var Luigi = (function() {
     /**
      * Default filter set.
      *
+     * @alias Luigi.FILTERS
      * @constant
      * @memberof Luigi
      * @default
@@ -231,7 +235,7 @@ var Luigi = (function() {
    * Create a new Template instance.
    *
    * @constructor Luigi.Template
-   * @memberof Luigi
+   * @alias Luigi.Template
    *
    * @param template {string} Template string (required).
    * @param filters {hash} Filters (optional).
@@ -264,6 +268,7 @@ var Luigi = (function() {
    * Run template with given parameters.
    *
    * @function Luigi.Template#run
+   * @alias Luigi.Template#run
    *
    * @param args {hash} Template parameters (required).
    * @param fn {function} Callback function (optional).
@@ -304,6 +309,7 @@ var Luigi = (function() {
    *
    * @constructor Luigi.Cache
    * @memberof Luigi
+   * @alias Luigi.Cache
    *
    * @param templates {hash} name to template map (required).
    * @param filters {hash} custom filter map (optional).
@@ -319,6 +325,7 @@ var Luigi = (function() {
    * Find named template in cache and run it with the given arguments.
    *
    * @function Luigi.Cache#run
+   * @alias Luigi.Cache#run
    *
    * @param key {hash} Template key (required).
    * @param args {hash} Template run arguments (required).
@@ -353,6 +360,7 @@ var Luigi = (function() {
    * (optionally) filters.
    *
    * @function Luigi.cache
+   * @alias Luigi.cache
    *
    * @param templates {hash} name to template map (required).
    * @param filters {hash} custom filter map (optional).
@@ -385,6 +393,7 @@ var Luigi = (function() {
    * (optionally) filters.
    *
    * @function Luigi.run
+   * @alias Luigi.run
    *
    * @param template {string} Template parameters (required).
    * @param args {hash} Template parameters (required).
