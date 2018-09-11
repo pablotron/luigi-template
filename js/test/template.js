@@ -30,4 +30,29 @@
 
     assert.equal(r, 'foofoofoo');
   });
+
+  it('run with callback', function() {
+    var t = new Luigi.Template("%{bar}foo%{bar}"),
+        r = [];
+
+    t.run({
+      bar: 'foo',
+    }, function(s) {
+      r.push(s);
+    });
+
+    assert.equal(r.join(''), 'foofoofoo');
+  });
+
+  it('run singleton with callback', function() {
+    var r = [];
+
+    Luigi.run('%{bar}foo%{bar}', {
+      bar: 'foo',
+    }, null, function(s) {
+      r.push(s);
+    });
+
+    assert.equal(r.join(''), 'foofoofoo');
+  });
 })();
