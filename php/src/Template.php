@@ -526,7 +526,7 @@ class Filters {
 
     self::$FILTERS = [
       'h' => function($v) {
-        return htmlspecialchars($v, ENT_QUOTES);
+        return htmlspecialchars((string) $v, ENT_QUOTES);
       },
 
       'u' => function($v) {
