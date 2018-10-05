@@ -61,7 +61,7 @@ means you can embed it directly in your project without using
 
 Installation (Ruby)
 -------------------
-Install via [RubyGems][rubygems]:
+Install via [RubyGems][]:
 
     # install luigi-template via ruby gems
     gem install -r luigi-template
@@ -407,3 +407,4 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [Rake]: https://github.com/ruby/rake
 [PHPUnit]: https://phpunit.de/
 [Phan]: https://github.com/phan/phan
+[RubyGems]: https://rubygems.org/
