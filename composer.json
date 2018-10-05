@@ -22,13 +22,13 @@
 
   "autoload": {
     "psr-4": {
-      "Pablotron\\Luigi\\": "src/"
+      "Pablotron\\Luigi\\": "php/src/"
     }
   },
 
   "scripts": {
     "test-unit": [
-      "phpunit --bootstrap vendor/autoload.php tests"
+      "phpunit --bootstrap vendor/autoload.php php/tests"
     ],
 
     "test-xml": [
@@ -36,7 +36,7 @@
     ],
 
     "test-static": [
-      "phan src/*.php"
+      "phan php/src/*.php"
     ],
 
     "test": [
@@ -45,7 +45,7 @@
     ],
 
     "docs": [
-      "phpdoc -d src -t docs --template=responsive-twig --title=LuigiTemplate"
+      "phpdoc -d php/src -t docs --template=responsive-twig --title=LuigiTemplate"
     ]
   },
 

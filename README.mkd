@@ -1,0 +1,409 @@
+Luigi Template
+==============
+
+Overview
+--------
+Simple multi-language string templating library inspired by [Unix
+pipes][pipe].
+
+Features:
+* Multi-language: Java, JavaScript, PHP, and Ruby.
+* Chainable filters, via piping.
+* Useful built-in filters.
+* Template caching.
+* Small: Less than 4k minified (see `luigi-template.min.js`),
+* Stand-alone: No external dependencies (no jQuery, etc),
+* Compatible: Works in browsers as old as IE9.
+* MIT-licensed.
+
+Installation (Java)
+-------------------
+To generate a stand-alone JAR file, do the following:
+
+    mvn package
+
+The generated JAR file will be available in the `target/` directory.
+
+Installation (JavaScript)
+-------------------------
+Minify `luigi-template.js` using your minifier of choice, and drop it
+into your source tree.  I like [jsmin][], personally:
+
+    jsmin < luigi-template.js > luigi-template-0.5.0.min.js
+
+*Note:* If you are upgrading from a pre-0.5.0 version of Luigi Template,
+be sure to include `luigi-compat.js` as well.  See the *Changes in
+0.5.0* section below for details.
+
+Installation (PHP)
+------------------
+### Using [Composer][composer]
+
+    # in your project root
+    composer require pablotron/luigi-template:~0.5
+
+Or add it to the `composer.json` for your project, like so:
+
+    "require": {
+      "pablotron/luigi-template": "~0.5"
+    },
+
+### Manual Installation
+The source file for Luigi Template is entirely self-contained, which
+means you can embed it directly in your project without using
+[Composer][composer] by doing the following:
+
+    # copy file to your project
+    cp php/src/Template.php path/to/your/project/
+    
+    # then, somewhere in your project...
+    require_once 'path/to/Template.php';
+
+Installation (Ruby)
+-------------------
+Install via [RubyGems][rubygems]:
+
+    # install luigi-template via ruby gems
+    gem install -r luigi-template
+
+Usage (JavaScript)
+------------------
+A minimal template:
+
+    // create template
+    var t = new Luigi.Template('hello %{name}');
+
+    // run template, print result to console
+    console.log(t.run({
+      name: 'Paul',
+    }));
+
+    // prints "hello Paul"
+
+If you have a template that you only need to run one time, you can use
+the `Luigi.run()` singleton to run it, like this:
+
+    // create and run template in one shot
+    var r = Luigi.run('hello %{name}', {
+      name: 'Paul',
+    });
+
+    // print result to console
+    console.log(r);
+
+    // prints "hello Paul"
+
+Templates parameters can be modified by filters.  Filters are applied to
+a parameter value by appending a `|` (pipe) character, followed by the
+filter name.
+
+Here is the template from above, with the name value HTML-escaped using
+a built-in filter:
+
+    // create template that prints hello and the HTML-escaped name
+    var t = new Luigi.Template('hello %{name | h}');
+
+    // run template, print result to console
+    console.log(t.run({
+      name: '<Paul>',
+    }));
+
+    // prints "hello &lt;Paul&gt;"
+
+The built-in templates are:
+
+* `uc`: Upper-case string value.
+* `lc`: Lower-case string value.
+* `s`: Pluralize a value by returning `""` if the value is 1, and
+  `"s"` otherwise.
+* `length`: Get the length of an array.
+* `trim`: Trim leading and trailing whitespace from a string.
+* `h`: HTML-escape a string value.
+* `u`: URL-escape a string value.
+* `json`: JSON-encode a value.
+
+You can create your own custom filters, too.
+
+The easiest way to create your own custom filter is to add it to the set
+of global filters (`Luigi.FILTERS`), like so:
+
+    // add global template filter
+    Luigi.FILTERS.barify = function(s) {
+      return 'bar-' + s + '-bar';
+    };
+
+    // create template that uses custom global filter
+    var t = new Luigi.Template('hello %{name | barify | h}');
+
+    // run template, print result to console
+    console.log(t.run({
+      name: '<Paul>',
+    }));
+
+    // prints "hello bar-&lt;Paul&gt;-bar"
+
+You can also create a custom filter and limit it to a particular
+template by passing a custom filter hash as the second parameter to the
+`Luigi.Template` constructor, like this:
+
+    // create template with custom template-specific filter
+    var t = new Luigi.Template('hello %{name | barify | h}', {
+      barify: function(s) {
+        return 'bar-' + s + '-bar';
+      },
+    });
+
+    // run template, print result to console
+    console.log(t.run({
+      name: '<Paul>',
+    }));
+
+    // prints "hello bar-&lt;Paul&gt;-bar"
+
+You can pass arguments to your custom filters.  Here's an example:
+
+    // create template with custom template-specific filter named
+    // "wrap", which wraps the value in the given filter parameters
+    var t = new Luigi.Template('hello %{name | wrap head tail | h}', {
+      wrap: function(s, args) {
+        if (args.length == 2) {
+          return [args[0], s, args[1]].join('-';
+        } else if (args.length == 1) {
+          return [args[0], s, args[0]].join('-');
+        } else {
+          return s;
+        }
+      },
+    });
+
+    // run template, print result to console
+    console.log(t.run({
+      name: '<Paul>',
+    }));
+
+    // prints "hello head-&lt;Paul&gt;-tail"
+
+If you have a lot of separate templates, or a few large templates,
+then it's a good idea to use a template cache.
+
+A template cache will create templates as they are needed (also known as
+"lazy initialization"), so the script loads quickly.  A template cache
+also caches instantiated (that is, created) templates for future use, so
+that running a template from the cache is fast too.
+
+Here's how you create a template cache:
+
+    // create template cache with a single template
+    var cache = Luigi.cache({
+      hello: 'hello %{name | uc | h}'
+    });
+
+    // run template, print result to console
+    console.log(cache.run('hello', {
+      name: '<Paul>',
+    }));
+
+    // prints "hello &lt;PAUL%gt;"
+
+Template caches use their own set of custom filters by passing a custom
+filter hash when creating a template cache:
+
+    // create template cache with a custom filter named "reverse"
+    var cache = Luigi.cache({
+      hello: 'hello %{name | uc | reverse | h}'
+    }, {
+      reverse: function(s) {
+        var cs = (s || '').split('');
+        cs.reverse();
+        return cs.join('');
+      },
+    });
+
+    // run template, print result to console
+    console.log(cache.run('hello', {
+      name: '<Paul>',
+    }));
+
+    // prints "hello %gt;LUAP&lt;"
+
+A template cache is also a convenient way to group all of the templates
+in a script together:
+
+    // add global filter named "reverse"
+    Luigi.FILTERS.reverse = function(s) {
+      var cs = (s || '').split('');
+      cs.reverse();
+      return cs.join('');
+    };
+
+    // create template cache
+    var TEMPLATES = Luigi.cache({
+      upper:    'hello %{name | uc | h}',
+      reverse:  'hello %{name | reverse | h}',
+    });
+
+    // run the upper and reverse templates above and populate
+    // the elements #upper and #reverse with their respective
+    // result
+    ['upper', 'reverse'].forEach(function(id) {
+      getElementByid(id).innerHTML = TEMPLATES.run(id, {
+        name: '<Paul>',
+      });
+    });
+
+Documentation
+-------------
+Usage documentation is available in the *Usage* section above, and API
+documentation is available online at the following URL:
+
+[https://pablotron.github.io/luigi-template/][api-docs]
+
+See the following sections to generate language-specific API
+documentation.
+
+Documentation (Java)
+--------------------
+The Java implementation of Luigi Template uses the
+[maven-javadoc-plugin][] to generate API documentation.
+
+To generate API documentation in `java/target/apidocs/`:
+
+    cd java/
+    mvn javadoc:javadoc
+
+To generate API documentation as a `jar` file:
+
+    cd java/
+    mvn javadoc:jar
+
+See [this page][maven-javadoc-plugin-usage] for additional options.
+
+Documentation (JavaScript)
+--------------------------
+You can generate the JavaScript API documentation using [jsdoc][].
+
+Documentation (Ruby)
+--------------------
+You can generate the Ruby API documentation in the `ruby/docs/`
+directory via [RDoc][], like so:
+
+    # generate API documentation in ruby/docs/ directory
+    cd ruby/
+    rake docs
+
+Tests (Java)
+------------
+To run the Java test suite, do the following:
+
+    cd java/
+    mvn test
+
+Tests (JavaScript)
+------------------
+This `js/test/` directory contains the test suite for the JavaScript
+implementation of [Luigi Template][], written in [Mocha][] and [Chai][].
+
+To run the test suite, load the `js/test/test.html` page in a browser.
+
+Tests (PHP)
+------------
+You can run the PHP test suite and static analyzer by doing the
+following:
+
+    # run php unit tests and static analyzer
+    composer test
+
+To run only the unit tests ([PHPUnit][]):
+
+    # run the php unit tests
+    composer test-unit
+
+To run only the static analyzer ([Phan][]):
+
+    # run the php static analyzer
+    composer test-static
+
+Run the unit tests and generate [JUnit][]-compatible output:
+
+    # run all unit tests and export the results as XML
+    composer test-xml
+
+Tests (Ruby)
+------------
+You can run the [minitest][] test suite via [Rake][], like so:
+
+    # run the test suite
+    cd ruby/
+    rake test
+
+To generate a [JUnit][]-compatible XML report, install the
+[minitest-junit][] gem and then do the following:
+
+    # run the test suite and generate a junit-compatible report.xml
+    cd ruby/
+    rake test TESTOPTS=--junit
+
+Changes in 0.5.0 (JavaScript)
+-----------------------------
+Version 0.5.0 of Luigi Template changes the namespace from
+`LuigiTemplate` to `Luigi`, which has the following effects:
+
+* old (0.4.x): `new LuigiTemplate(...)`, new (0.5): `new Luigi.Template(...)`
+* old (0.4.x): `LuigiTemplate.run(...)`, new: (0.5): `Luigi.run(...)`
+* old (0.4.x): `LuigiTemplate.VERSION`, new (0.5): `Luigi.VERSION`
+* old (0.4.x): `LuigiTemplate.FILTERS`, new: (0.5): `Luigi.FILTERS`
+* old (0.4.x): `new LuigiTemplate.Cache(...)`, new: (0.5): `Luigi.cache(...)` (recommended) or `new Luigi.Cache(...)`
+
+If you have an existing system that you cannot make changes to, you can
+include `luigi-compat.js` as a compatibility shim.  Tests for the
+compatibility shim are available in `js/test/compat/`.
+
+*Note:* The compatibility shim will disappear in a future release.
+
+Author
+------
+Paul Duncan ([pabs@pablotron.org][me])<br/>
+[https://pablotron.org/][me-web]
+
+License
+-------
+Copyright 2014-2018 Paul Duncan ([pabs@pablotron.org][me])
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+[composer]: https://getcomposer.org/
+[pipe]: https://en.wikipedia.org/wiki/Pipeline_(Unix)
+[jsmin]: https://www.crockford.com/javascript/jsmin.html
+[Luigi Template]: https://github.com/pablotron/luigi-template
+[me]: mailto:pabs@pablotron.org
+[me-web]: https://pablotron.org/
+[Mocha]: https://mochajs.org/
+[Chai]: http://www.chaijs.com/
+[jsdoc]: http://usejsdoc.org/
+[api-docs]: https://pablotron.github.io/luigi-template/
+[maven-javadoc-plugin]: https://maven.apache.org/plugins/maven-javadoc-plugin/
+[maven-javadoc-plugin-usage]: https://maven.apache.org/plugins/maven-javadoc-plugin/usage.html
+[JUnit]: https://junit.org/
+[minitest]: https://github.com/seattlerb/minitest
+[minitest-junit]: https://github.com/aespinosa/minitest-junit
+[RDoc]: https://github.com/ruby/rdoc
+[Rake]: https://github.com/ruby/rake
+[PHPUnit]: https://phpunit.de/
+[Phan]: https://github.com/phan/phan

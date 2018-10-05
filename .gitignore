@@ -1,7 +1,8 @@
 *.sw?
-php/vendor
+vendor
 php/docs/
 php/examples/*
 ruby/*.gem
 ruby/docs/
 java/target/
+js/out
