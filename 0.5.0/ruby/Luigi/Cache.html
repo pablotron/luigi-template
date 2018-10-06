@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>class Luigi::Cache - RDoc Documentation</title>
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../";
+  var index_rel_prefix = "../";
+</script>
+
+<script src="../js/jquery.js"></script>
+<script src="../js/darkfish.js"></script>
+
+<link href="../css/fonts.css" rel="stylesheet">
+<link href="../css/rdoc.css" rel="stylesheet">
+
+
+
+<body id="top" role="document" class="class">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="../index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="../table_of_contents.html#pages">Pages</a>
+    <a href="../table_of_contents.html#classes">Classes</a>
+    <a href="../table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="class-metadata">
+    
+    <div id="parent-class-section" class="nav-section">
+  <h3>Parent</h3>
+
+  
+  <p class="link">Object
+  
+</div>
+
+    
+    
+    <!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    
+    <li ><a href="#method-c-new">::new</a>
+    
+    <li ><a href="#method-i-5B-5D">#[]</a>
+    
+    <li ><a href="#method-i-run">#run</a>
+    
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="class-Luigi::Cache">
+  <h1 id="class-Luigi::Cache" class="class">
+    class Luigi::Cache
+  </h1>
+
+  <section class="description">
+    
+<p>Minimal lazy-loading template cache.</p>
+
+<p>Group a set of templates together and only parse them on an as-needed
+basis.</p>
+
+  </section>
+
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+
+    
+
+    
+     <section id="public-class-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Class Methods</h3>
+       </header>
+
+    
+      <div id="method-c-new" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">new</span><span
+            class="method-args">(strings, filters = FILTERS)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Create a new template cache with the given templates.</p>
+
+<p>Parameters:</p>
+<ul><li>
+<p><code>strings</code>: Map of template names to template strings.</p>
+</li><li>
+<p><code>filters</code>: Hash of filters.  Defaults to Luigi::FILTERS if
+unspecified.</p>
+</li></ul>
+
+<p>Example:</p>
+
+<pre class="ruby"><span class="ruby-comment"># create template cache</span>
+<span class="ruby-identifier">cache</span> = <span class="ruby-constant">Luigi</span><span class="ruby-operator">::</span><span class="ruby-constant">Cache</span>.<span class="ruby-identifier">new</span>({
+  <span class="ruby-value">hi:</span> <span class="ruby-string">&#39;hi %{name}!&#39;</span>
+})
+
+<span class="ruby-comment"># run template from cache</span>
+<span class="ruby-identifier">puts</span> <span class="ruby-identifier">cache</span>.<span class="ruby-identifier">run</span>(<span class="ruby-value">:hi</span>, {
+  <span class="ruby-value">name:</span> <span class="ruby-string">&#39;Paul&#39;</span>
+})
+
+<span class="ruby-comment"># prints &quot;hi paul!&quot;</span>
+</pre>
+          
+          
+
+          
+          <div class="method-source-code" id="new-source">
+            <pre><span class="ruby-comment"># File lib/luigi-template.rb, line 843</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">strings</span>, <span class="ruby-identifier">filters</span> = <span class="ruby-constant">FILTERS</span>)
+  <span class="ruby-comment"># work with frozen copy of strings hash</span>
+  <span class="ruby-identifier">strings</span> = <span class="ruby-identifier">strings</span>.<span class="ruby-identifier">freeze</span>
+
+  <span class="ruby-ivar">@templates</span> = <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">h</span>, <span class="ruby-identifier">k</span><span class="ruby-operator">|</span>
+    <span class="ruby-comment"># always deal with symbols</span>
+    <span class="ruby-identifier">k</span> = <span class="ruby-identifier">k</span>.<span class="ruby-identifier">intern</span>
+
+    <span class="ruby-comment"># make sure template exists</span>
+    <span class="ruby-identifier">raise</span> <span class="ruby-constant">UnknownTemplateError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">k</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">strings</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-identifier">k</span>)
+
+    <span class="ruby-comment"># create template</span>
+    <span class="ruby-identifier">h</span>[<span class="ruby-identifier">k</span>] = <span class="ruby-constant">Template</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">strings</span>[<span class="ruby-identifier">k</span>], <span class="ruby-identifier">filters</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Instance Methods</h3>
+       </header>
+
+    
+      <div id="method-i-5B-5D" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">[]</span><span
+            class="method-args">(key)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Get given template, or raise an <a
+href="UnknownTemplateError.html">UnknownTemplateError</a> if the given
+template does not exist.</p>
+
+<p>Example:</p>
+
+<pre class="ruby"><span class="ruby-comment"># create template cache</span>
+<span class="ruby-identifier">cache</span> = <span class="ruby-constant">Luigi</span><span class="ruby-operator">::</span><span class="ruby-constant">Cache</span>.<span class="ruby-identifier">new</span>({
+  <span class="ruby-value">hi:</span> <span class="ruby-string">&#39;hi %{name}!&#39;</span>
+})
+
+<span class="ruby-comment"># get template from cache</span>
+<span class="ruby-identifier">tmpl</span> = <span class="ruby-identifier">cache</span>[<span class="ruby-value">:hi</span>]
+
+<span class="ruby-comment"># run template, print result</span>
+<span class="ruby-identifier">puts</span> <span class="ruby-identifier">tmpl</span>.<span class="ruby-identifier">run</span>(<span class="ruby-value">:hi</span>, {
+  <span class="ruby-value">name:</span> <span class="ruby-string">&#39;Paul&#39;</span>
+})
+
+<span class="ruby-comment"># prints &quot;hi Paul&quot;</span>
+</pre>
+          
+          
+
+          
+          <div class="method-source-code" id="5B-5D-source">
+            <pre><span class="ruby-comment"># File lib/luigi-template.rb, line 880</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">[]</span>(<span class="ruby-identifier">key</span>)
+  <span class="ruby-ivar">@templates</span>[<span class="ruby-identifier">key</span>]
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-run" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">run</span><span
+            class="method-args">(key, args)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Run specified template from cache with the given templates.</p>
+
+<p>Raises an <a href="UnknownTemplateError.html">UnknownTemplateError</a> if
+the given template key does not exist.</p>
+
+<p>Parameters:</p>
+<ul><li>
+<p><code>key</code>: <a href="Template.html">Template</a> key.</p>
+</li><li>
+<p><code>args</code>: Argument key/value map.</p>
+</li></ul>
+
+<p>Example:</p>
+
+<pre class="ruby"><span class="ruby-comment"># create template cache</span>
+<span class="ruby-identifier">cache</span> = <span class="ruby-constant">Luigi</span><span class="ruby-operator">::</span><span class="ruby-constant">Cache</span>.<span class="ruby-identifier">new</span>({
+  <span class="ruby-value">hi:</span> <span class="ruby-string">&#39;hi %{name}!&#39;</span>
+})
+
+<span class="ruby-comment"># run template from cache</span>
+<span class="ruby-identifier">puts</span> <span class="ruby-identifier">cache</span>.<span class="ruby-identifier">run</span>(<span class="ruby-value">:hi</span>, {
+  <span class="ruby-value">name:</span> <span class="ruby-string">&#39;Paul&#39;</span>
+})
+
+<span class="ruby-comment"># prints &quot;hi paul!&quot;</span>
+</pre>
+          
+          
+
+          
+          <div class="method-source-code" id="run-source">
+            <pre><span class="ruby-comment"># File lib/luigi-template.rb, line 909</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">run</span>(<span class="ruby-identifier">key</span>, <span class="ruby-identifier">args</span>)
+  <span class="ruby-comment"># run template with args and return result</span>
+  <span class="ruby-ivar">@templates</span>[<span class="ruby-identifier">key</span>].<span class="ruby-identifier">run</span>(<span class="ruby-identifier">args</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+  </section>
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="https://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="https://ruby.github.io/rdoc/">RDoc</a> 6.0.1.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+

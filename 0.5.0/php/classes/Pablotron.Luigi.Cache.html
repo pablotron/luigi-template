@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta charset="utf-8"/>
+    <title>    LuigiTemplate &raquo; \Pablotron\Luigi\Cache
+</title>
+    <meta name="author" content=""/>
+    <meta name="description" content=""/>
+
+            <link href="../css/template.css" rel="stylesheet" media="all"/>
+    
+            <!--[if lt IE 9]>
+        <script src="https://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
+        <![endif]-->
+        <script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script>
+        <script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script>
+        <script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script>
+        <script src="../js/bootstrap.js" type="text/javascript"></script>
+        <script src="../js/template.js" type="text/javascript"></script>
+        <script src="../js/prettify/prettify.min.js" type="text/javascript"></script>
+    
+            <link rel="shortcut icon" href="../img/favicon.ico"/>
+        <link rel="apple-touch-icon" href="../img/apple-touch-icon.png"/>
+        <link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png"/>
+        <link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png"/>
+    </head>
+<body>
+
+        <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span> <span class="icon-bar"></span>
+                    <span class="icon-bar"></span> </a>
+                <a class="brand" href="../index.html">LuigiTemplate</a>
+
+                <div class="nav-collapse">
+                    <ul class="nav">
+                        <li class="dropdown">
+                            <a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                API Documentation <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                                                    <li><a>Namespaces</a></li>
+                                                                        <li><a href="../namespaces/Pablotron.html">Pablotron</a></li>
+                                                                                                                                </ul>
+                        </li>
+                        <li class="dropdown" id="charts-menu">
+                            <a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                Charts <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="../graph_class.html">
+                                        <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown" id="reports-menu">
+                            <a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                Reports <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="../errors.html">
+                                        <i class="icon-list-alt"></i>&#160;Errors
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="../markers.html">
+                                        <i class="icon-list-alt"></i>&#160;Markers
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="../deprecated.html">
+                                        <i class="icon-list-alt"></i>&#160;Deprecated
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="go_to_top">
+            <a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>
+        </div>
+    </div>
+    
+    <div id="___" class="container">
+        <noscript>
+            <div class="alert alert-warning">
+                Javascript is disabled; several features are only available if Javascript is enabled.
+            </div>
+        </noscript>
+
+        
+            <style>
+        .deprecated h2 {
+            text-decoration: line-through;
+        }
+    </style>
+    <div class="row">
+        <div class="span4">
+                    <div class="btn-group view pull-right" data-toggle="buttons-radio">
+        <button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button>
+        <button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+    </div>
+    <div class="btn-group visibility" data-toggle="buttons-checkbox">
+        <button class="btn public active" title="Show public elements">Public</button>
+        <button class="btn protected" title="Show protected elements">Protected</button>
+        <button class="btn private" title="Show private elements">Private</button>
+        <button class="btn inherited active" title="Show inherited elements">Inherited</button>
+    </div>
+
+        <ul class="side-nav nav nav-list">
+        <li class="nav-header">
+            <i class="icon-custom icon-method"></i> Methods
+            <ul>
+                                                                                                    <li class="method public">
+        <a href="#method___construct" title="__construct :: Create a new template cache.">
+            <span class="description">Create a new template cache.</span><pre>__construct</pre>
+        </a>
+    </li>
+
+                                                                                                        <li class="method public">
+        <a href="#method_offsetExists" title="offsetExists :: Returns true if the given template key exists in this cache.">
+            <span class="description">Returns true if the given template key exists in this cache.</span><pre>offsetExists</pre>
+        </a>
+    </li>
+
+                                                                                                        <li class="method public">
+        <a href="#method_offsetGet" title="offsetGet :: Get the template associated with the given template key.">
+            <span class="description">Get the template associated with the given template key.</span><pre>offsetGet</pre>
+        </a>
+    </li>
+
+                                                                                                        <li class="method public">
+        <a href="#method_offsetSet" title="offsetSet :: Set the template associated with the given template key.">
+            <span class="description">Set the template associated with the given template key.</span><pre>offsetSet</pre>
+        </a>
+    </li>
+
+                                                                                                        <li class="method public">
+        <a href="#method_offsetUnset" title="offsetUnset :: Remove the template associated with the given template key.">
+            <span class="description">Remove the template associated with the given template key.</span><pre>offsetUnset</pre>
+        </a>
+    </li>
+
+                                                                                                        <li class="method public">
+        <a href="#method_run" title="run :: Run template with the given arguments and return the result.">
+            <span class="description">Run template with the given arguments and return the result.</span><pre>run</pre>
+        </a>
+    </li>
+
+                                                </ul>
+        </li>
+        <li class="nav-header protected">» Protected
+            <ul>
+                                                                                                                                                                                                                                                                    </ul>
+        </li>
+        <li class="nav-header private">» Private
+            <ul>
+                                                                                                                                                                                                                                                                    </ul>
+        </li>
+        <li class="nav-header">
+            <i class="icon-custom icon-constant"></i> Constants
+            <ul>
+                            </ul>
+        </li>
+    </ul>
+
+
+        </div>
+
+        <div class="span8">
+            <div class="element class">
+                <h1>Cache</h1>
+                <small style="display: block; text-align: right">
+                                                                Implements \ArrayAccess
+                                    </small>
+                <p class="short_description">Lazy-loading template cache.</p>
+                <div class="details">
+                    <div class="long_description">
+                        <p>Group a set of templates together and only parse them on an as-needed
+basis.</p>
+                    </div>
+                    <table class="table table-bordered">
+                                                                                    <tr>
+                                    <th>
+                                        api
+                                                                            </th>
+                                    <td>
+                                                                                    
+                                                                                
+                                    </td>
+                                </tr>
+                                                                                                                <tr>
+                                    <th>
+                                        package
+                                                                            </th>
+                                    <td>
+                                                                                    
+                                                                                <p>Pablotron\Luigi</p>
+                                    </td>
+                                </tr>
+                                                                                                                                                                                </table>
+
+                    <h3><i class="icon-custom icon-method"></i> Methods</h3>
+                                                                <a id="method___construct"></a>
+                        <div class="element clickable method public  method___construct" data-toggle="collapse" data-target=".method___construct .collapse">
+                            <h2>Create a new template cache.</h2>
+                            <pre>__construct(array $templates, array $filters = array()) </pre>
+                            <div class="labels">
+                                                                                                                                                                <span class="label label-info">api</span>                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"><p>Example:</p>
+<pre><code># load cache class
+use \Pablotron\Luigi\Cache;
+
+# create template cache
+$cache = new Cache([
+  'hi' =&gt; 'hi %{name}!',
+]);</code></pre></div>
+
+                                    <table class="table">
+                                                                                    <tr>
+                                                <th>
+                                                    
+                                                </th>
+                                                <td>
+                                                                                                    </td>
+                                            </tr>
+                                                                                                                    </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$templates</h4>
+                                                <code>array</code><p><p>Map of template keys to template strings.</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$filters</h4>
+                                                <code>array</code><p><p>Custom filter map (optional).</p></p>
+                                            </div>
+                                                                            
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method_offsetExists"></a>
+                        <div class="element clickable method public  method_offsetExists" data-toggle="collapse" data-target=".method_offsetExists .collapse">
+                            <h2>Returns true if the given template key exists in this cache.</h2>
+                            <pre>offsetExists(string $key) : boolean</pre>
+                            <div class="labels">
+                                                                                                                                                                <span class="label label-info">api</span>                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"><p>Example:</p>
+<pre><code># load cache class
+use \Pablotron\Luigi\Cache;
+
+# create cache
+$cache = new Cache([
+  'hi' =&gt; 'hi %{name}!',
+]);
+
+# get template 'hi' from cache
+foreach (array('hi', 'nope') as $tmpl_key) {
+  echo "$key: " . (isset($cache[$key]) ? 'Yes' : 'No') . "\n"
+}
+
+# prints "hi: Yes" and "nope: No"</code></pre></div>
+
+                                    <table class="table">
+                                                                                                                    </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$key</h4>
+                                                <code>string</code><p><p>Template key.</p></p>
+                                            </div>
+                                                                            
+                                                                            <h3>Response</h3>
+                                        <code>boolean</code><p><p>Returns true if the template key exists.</p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method_offsetGet"></a>
+                        <div class="element clickable method public  method_offsetGet" data-toggle="collapse" data-target=".method_offsetGet .collapse">
+                            <h2>Get the template associated with the given template key.</h2>
+                            <pre>offsetGet(string $key) : \Pablotron\Luigi\Template</pre>
+                            <div class="labels">
+                                                                                                                                                                <span class="label label-info">api</span>                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"><p>Example:</p>
+<pre><code># load cache class
+use \Pablotron\Luigi\Cache;
+
+# create cache
+$cache = new Cache([
+  'hi' =&gt; 'hi %{name}!',
+]);
+
+# get template 'hi' from cache
+$tmpl = $cache['hi'];
+
+echo $tmpl-&gt;run([
+  'name' =&gt; 'Paul',
+]);
+
+# prints "hi Paul!"</code></pre></div>
+
+                                    <table class="table">
+                                                                                                                            <tr>
+                                                <th>Throws</th>
+                                                <td>
+                                                    <dl>
+                                                                                                            <dt>\Pablotron\Luigi\UnknownTemplateError</dt>
+                                                        <dd><p>if the given template does not exist.</p></dd>
+                                                                                                                                                            </dl>
+                                                </td>
+                                            </tr>
+                                                                            </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$key</h4>
+                                                <code>string</code><p><p>Template key.</p></p>
+                                            </div>
+                                                                            
+                                                                            <h3>Response</h3>
+                                        <code><a href="../classes/Pablotron.Luigi.Template.html">\Pablotron\Luigi\Template</a></code><p><p>Returns template associated with this key.</p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method_offsetSet"></a>
+                        <div class="element clickable method public  method_offsetSet" data-toggle="collapse" data-target=".method_offsetSet .collapse">
+                            <h2>Set the template associated with the given template key.</h2>
+                            <pre>offsetSet(string $key, string $val) : void</pre>
+                            <div class="labels">
+                                                                                                                                                                <span class="label label-info">api</span>                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"><p>Example:</p>
+<pre><code># load cache class
+use \Pablotron\Luigi\Cache;
+
+# create cache
+$cache = new Cache();
+
+# add template to cache as 'hash-name'
+$cache['hash-name'] = 'hashed name: %{name | hash sha1}';
+
+echo $cache['hash-name']-&gt;run([
+  'name' =&gt; 'Paul',
+]);
+
+# prints "sha1 of name: c3687ab9880c26dfe7ab966a8a1701b5e017c2ff"</code></pre></div>
+
+                                    <table class="table">
+                                                                                                                    </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$key</h4>
+                                                <code>string</code><p><p>Template key.</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$val</h4>
+                                                <code>string</code><p><p>Template string.</p></p>
+                                            </div>
+                                                                            
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method_offsetUnset"></a>
+                        <div class="element clickable method public  method_offsetUnset" data-toggle="collapse" data-target=".method_offsetUnset .collapse">
+                            <h2>Remove the template associated with the given template key.</h2>
+                            <pre>offsetUnset(array $key) : void</pre>
+                            <div class="labels">
+                                                                                                                                                                <span class="label label-info">api</span>                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"><p>Example:</p>
+<pre><code># load cache class
+use \Pablotron\Luigi\Cache;
+
+# create cache
+$cache = new Cache([
+  'hi' =&gt; 'hi %{name}!',
+]);
+
+# remove template 'hi' from cache
+unset($cache['hi']);
+
+echo $cache['hi']-&gt;run([
+  'name' =&gt; 'Paul',
+]);
+
+# throws UnknownTemplateError</code></pre></div>
+
+                                    <table class="table">
+                                                                                                                    </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$key</h4>
+                                                <code>array</code><p><p>Template key.</p></p>
+                                            </div>
+                                                                            
+                                                                    </div>
+                            </div>
+
+                        </div>
+                                            <a id="method_run"></a>
+                        <div class="element clickable method public  method_run" data-toggle="collapse" data-target=".method_run .collapse">
+                            <h2>Run template with the given arguments and return the result.</h2>
+                            <pre>run(string $key, array $args = array()) : string</pre>
+                            <div class="labels">
+                                                                                                                                                                <span class="label label-info">api</span>                            </div>
+
+                            
+                            <div class="row collapse">
+                                <div class="detail-description">
+                                    <div class="long_description"><p>Example:</p>
+<pre><code># load cache class
+use \Pablotron\Luigi\Cache;
+
+# create cache
+$cache = new Cache([
+  'my-template' =&gt; 'hello %{name | uc}',
+]);
+
+# run template
+echo $cache-&gt;run('my-template', [
+  'name' =&gt; 'Paul',
+]);
+
+# prints "hello PAUL"</code></pre></div>
+
+                                    <table class="table">
+                                                                                                                    </table>
+
+                                                                            <h3>Arguments</h3>
+                                                                                    <div class="subelement argument">
+                                                <h4>$key</h4>
+                                                <code>string</code><p><p>Template key.</p></p>
+                                            </div>
+                                                                                    <div class="subelement argument">
+                                                <h4>$args</h4>
+                                                <code>array</code><p><p>Template arguments.</p></p>
+                                            </div>
+                                                                            
+                                                                            <h3>Response</h3>
+                                        <code>string</code><p><p>Returns the expanded template result.</p></p>
+                                                                    </div>
+                            </div>
+
+                        </div>
+                    
+                    
+                                                                <h3><i class="icon-custom icon-property"></i> Properties</h3>
+                                                    <a id="property_templates"> </a>
+                            <div class="element clickable property  private property_templates" data-toggle="collapse" data-target=".property_templates .collapse">
+                                <h2>Map of keys to template strings.</h2>
+                                <pre>templates : array</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>Map of keys to template strings.</p>
+                                                                                                                    <p>Filter map (optional).</p>
+                                                                                                                    <p>Parsed template cache.</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>array</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_filters"> </a>
+                            <div class="element clickable property  private property_filters" data-toggle="collapse" data-target=".property_filters .collapse">
+                                <h2>Map of keys to template strings.</h2>
+                                <pre>filters : array</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>Map of keys to template strings.</p>
+                                                                                                                    <p>Filter map (optional).</p>
+                                                                                                                    <p>Parsed template cache.</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>array</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                    <a id="property_lut"> </a>
+                            <div class="element clickable property  private property_lut" data-toggle="collapse" data-target=".property_lut .collapse">
+                                <h2>Map of keys to template strings.</h2>
+                                <pre>lut : array</pre>
+                                <div class="labels">
+                                                                                                        </div>
+                                <div class="row collapse">
+                                    <div class="detail-description">
+                                        <div class="long_description"></div>
+
+                                        <table class="table">
+                                                                                            <tr>
+                                                    <th>
+                                                        var
+                                                    </th>
+                                                    <td>
+                                                                                                                    <p>Map of keys to template strings.</p>
+                                                                                                                    <p>Filter map (optional).</p>
+                                                                                                                    <p>Parsed template cache.</p>
+                                                                                                            </td>
+                                                </tr>
+                                                                                    </table>
+
+                                                                                    <h3>Type(s)</h3>
+                                            <code>array</code>
+                                                                            </div>
+                                </div>
+                            </div>
+                                                            </div>
+            </div>
+            <a id="\Pablotron\Luigi\Cache"></a>
+            <ul class="breadcrumb">
+                <li><a href="../index.html"><i class="icon-custom icon-class"></i></a></li>
+                    
+    
+    <li><span class="divider">\</span><a href="../namespaces/Pablotron.Luigi.html">Luigi</a></li>
+
+                <li class="active"><span class="divider">\</span><a href="../classes/Pablotron.Luigi.Cache.html">Cache</a></li>
+            </ul>
+        </div>
+    </div>
+
+    </div>
+
+        <footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by
+            <a href="http://glyphicons.com/">Glyphicons</a>.<br/>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and<br/>
+            generated on Wed, 05 Sep 2018 04:34:04 +0000.<br/>
+    </footer>
+    </body>
+</html>

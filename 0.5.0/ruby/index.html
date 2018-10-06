@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>RDoc Documentation</title>
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+  var index_rel_prefix = "./";
+</script>
+
+<script src="./js/jquery.js"></script>
+<script src="./js/darkfish.js"></script>
+
+<link href="./css/fonts.css" rel="stylesheet">
+<link href="./css/rdoc.css" rel="stylesheet">
+
+
+
+<body id="top" role="document" class="file">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="./index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="./table_of_contents.html#pages">Pages</a>
+    <a href="./table_of_contents.html#classes">Classes</a>
+    <a href="./table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  <div id="project-metadata">
+    
+    <div id="classindex-section" class="nav-section">
+  <h3>Class and Module Index</h3>
+
+  <ul class="link-list">
+  
+    <li><a href="./Luigi.html">Luigi</a>
+  
+    <li><a href="./Luigi/BaseUnknownError.html">Luigi::BaseUnknownError</a>
+  
+    <li><a href="./Luigi/Cache.html">Luigi::Cache</a>
+  
+    <li><a href="./Luigi/LuigiError.html">Luigi::LuigiError</a>
+  
+    <li><a href="./Luigi/Template.html">Luigi::Template</a>
+  
+    <li><a href="./Luigi/UnknownFilterError.html">Luigi::UnknownFilterError</a>
+  
+    <li><a href="./Luigi/UnknownKeyError.html">Luigi::UnknownKeyError</a>
+  
+    <li><a href="./Luigi/UnknownTemplateError.html">Luigi::UnknownTemplateError</a>
+  
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main">
+
+
+<h1 id="label-Luigi+Template"><a href="../Luigi.html">Luigi</a> Template<span><a href="#label-Luigi+Template">&para;</a> <a href="#top">&uarr;</a></span></h1>
+
+<h2 id="label-Overview">Overview<span><a href="#label-Overview">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p><a href="../Luigi.html">Luigi</a> Template is a string template library.</p>
+
+<h2 id="label-Examples">Examples<span><a href="#label-Examples">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>Simple usage example:</p>
+
+<pre class="ruby"><span class="ruby-comment"># load luigi template</span>
+<span class="ruby-identifier">require</span> <span class="ruby-string">&#39;luigi-template&#39;</span>
+
+<span class="ruby-comment"># create template</span>
+<span class="ruby-identifier">tmpl</span> = <span class="ruby-constant">Luigi</span><span class="ruby-operator">::</span><span class="ruby-constant">Template</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;hello %{name}&#39;</span>)
+
+<span class="ruby-comment"># run template and print result</span>
+<span class="ruby-identifier">puts</span> <span class="ruby-identifier">tmpl</span>.<span class="ruby-identifier">run</span>({
+  <span class="ruby-value">name:</span> <span class="ruby-string">&#39;Paul&#39;</span>
+})
+
+<span class="ruby-comment"># prints &quot;hello Paul&quot;</span>
+</pre>
+
+<p>You can also filter values in templates, using the pipe symbol:</p>
+
+<pre class="ruby"><span class="ruby-comment"># create template that converts name to upper-case</span>
+<span class="ruby-identifier">tmpl</span> = <span class="ruby-constant">Luigi</span><span class="ruby-operator">::</span><span class="ruby-constant">Template</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;hello %{name | uc}&#39;</span>)
+
+<span class="ruby-comment"># run template and print result</span>
+<span class="ruby-identifier">puts</span> <span class="ruby-identifier">tmpl</span>.<span class="ruby-identifier">run</span>({
+  <span class="ruby-value">name:</span> <span class="ruby-string">&#39;Paul&#39;</span>
+})
+
+<span class="ruby-comment"># prints &quot;hello PAUL&quot;</span>
+</pre>
+
+<p>Filters can be chained:</p>
+
+<pre class="ruby"><span class="ruby-comment"># create template that converts name to upper-case and then</span>
+<span class="ruby-comment"># strips leading and trailing whitespace</span>
+<span class="ruby-identifier">tmpl</span> = <span class="ruby-constant">Luigi</span><span class="ruby-operator">::</span><span class="ruby-constant">Template</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;hello %{name | uc | trim}&#39;</span>)
+
+<span class="ruby-comment"># run template and print result</span>
+<span class="ruby-identifier">puts</span> <span class="ruby-identifier">tmpl</span>.<span class="ruby-identifier">run</span>({
+  <span class="ruby-value">name:</span> <span class="ruby-string">&#39;   Paul    &#39;</span>
+})
+
+<span class="ruby-comment"># prints &quot;hello PAUL&quot;</span>
+</pre>
+
+<p>Filters can take arguments:</p>
+
+<pre class="ruby"><span class="ruby-comment"># create template that converts name to lowercase and then</span>
+<span class="ruby-comment"># calculates the SHA-1 digest of the result</span>
+<span class="ruby-identifier">tmpl</span> = <span class="ruby-constant">Luigi</span><span class="ruby-operator">::</span><span class="ruby-constant">Template</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;hello %{name | lc | hash sha1}&#39;</span>)
+
+<span class="ruby-comment"># run template and print result</span>
+<span class="ruby-identifier">puts</span> <span class="ruby-identifier">tmpl</span>.<span class="ruby-identifier">run</span>({
+  <span class="ruby-value">name:</span> <span class="ruby-string">&#39;Paul&#39;</span>,
+})
+
+<span class="ruby-comment"># prints &quot;hello a027184a55211cd23e3f3094f1fdc728df5e0500&quot;</span>
+</pre>
+
+<p>You can define custom global filters:</p>
+
+<pre class="ruby"><span class="ruby-comment"># create custom global filter named &#39;foobarify&#39;</span>
+<span class="ruby-constant">Luigi</span><span class="ruby-operator">::</span><span class="ruby-constant">FILTERS</span>[<span class="ruby-value">:foobarify</span>] = <span class="ruby-identifier">proc</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">s</span><span class="ruby-operator">|</span> <span class="ruby-node">&quot;foo-#{s}-bar&quot;</span> }
+
+<span class="ruby-comment"># create template which uses custom &quot;foobarify&quot; filter</span>
+<span class="ruby-identifier">tmpl</span> = <span class="ruby-constant">Luigi</span><span class="ruby-operator">::</span><span class="ruby-constant">Template</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;hello %{name | foobarify}&#39;</span>)
+
+<span class="ruby-comment"># run template and print result</span>
+<span class="ruby-identifier">puts</span> <span class="ruby-identifier">tmpl</span>.<span class="ruby-identifier">run</span>({
+  <span class="ruby-value">name:</span> <span class="ruby-string">&#39;Paul&#39;</span>
+})
+
+<span class="ruby-comment"># prints &quot;hello foo-Paul-bar&quot;</span>
+</pre>
+
+<p>Or define custom filters for a template:</p>
+
+<pre class="ruby"><span class="ruby-comment"># create template with custom filters rather than global filters</span>
+<span class="ruby-identifier">tmpl</span> = <span class="ruby-constant">Luigi</span><span class="ruby-operator">::</span><span class="ruby-constant">Template</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;hello %{name | reverse}&#39;</span>, {
+  <span class="ruby-value">reverse:</span> <span class="ruby-identifier">proc</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">s</span><span class="ruby-operator">|</span> <span class="ruby-identifier">s</span>.<span class="ruby-identifier">reverse</span> }
+})
+
+<span class="ruby-comment"># run template and print result</span>
+<span class="ruby-identifier">puts</span> <span class="ruby-identifier">tmpl</span>.<span class="ruby-identifier">run</span>({
+  <span class="ruby-value">name:</span> <span class="ruby-string">&#39;Paul&#39;</span>,
+})
+
+<span class="ruby-comment"># prints &quot;hello luaP&quot;</span>
+</pre>
+
+<p>Your custom filters can accept arguments, too:</p>
+
+<pre class="ruby"><span class="ruby-comment"># create custom global filter named &#39;foobarify&#39;</span>
+<span class="ruby-constant">Luigi</span><span class="ruby-operator">::</span><span class="ruby-constant">FILTERS</span>[<span class="ruby-value">:wrap</span>] = <span class="ruby-identifier">proc</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">s</span>, <span class="ruby-identifier">args</span><span class="ruby-operator">|</span>
+  <span class="ruby-keyword">case</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">length</span>
+  <span class="ruby-keyword">when</span> <span class="ruby-value">2</span>
+    <span class="ruby-string">&#39;(%s, %s, %s)&#39;</span> <span class="ruby-operator">%</span> [<span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>], <span class="ruby-identifier">s</span>, <span class="ruby-identifier">args</span>[<span class="ruby-value">1</span>]]
+  <span class="ruby-keyword">when</span> <span class="ruby-value">1</span>
+    <span class="ruby-string">&#39;(%s in %s)&#39;</span> <span class="ruby-operator">%</span> [<span class="ruby-identifier">s</span>, <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>]]
+  <span class="ruby-keyword">when</span> <span class="ruby-value">0</span>
+    <span class="ruby-identifier">s</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">raise</span> <span class="ruby-string">&#39;invalid argument count&#39;</span>
+  <span class="ruby-keyword">end</span>
+}
+
+<span class="ruby-comment"># create template that uses custom &quot;wrap&quot; filter</span>
+<span class="ruby-identifier">tmpl</span> = <span class="ruby-constant">Luigi</span><span class="ruby-operator">::</span><span class="ruby-constant">Template</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;sandwich: %{meat | wrap slice heel}, taco: %{meat | wrap shell}&#39;</span>)
+
+<span class="ruby-comment"># run template and print result</span>
+<span class="ruby-identifier">puts</span> <span class="ruby-identifier">tmpl</span>.<span class="ruby-identifier">run</span>({
+  <span class="ruby-value">meat:</span> <span class="ruby-string">&#39;chicken&#39;</span>
+})
+
+<span class="ruby-comment"># prints &quot;sandwich: (slice, chicken, heel), taco: (chicken in shell)&quot;</span>
+</pre>
+
+<h2 id="label-Filters">Filters<span><a href="#label-Filters">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>The following filters are built-in:</p>
+<ul><li>
+<p><code>uc</code>: Convert string to upper-case.</p>
+</li><li>
+<p><code>lc</code>: Convert string to lower-case.</p>
+</li><li>
+<p><code>h</code>: HTML-escape string.</p>
+</li><li>
+<p><code>u</code>: URL-escape string.</p>
+</li><li>
+<p><code>json</code>: JSON-encode value.</p>
+</li><li>
+<p><code>trim</code>: Strip leading and trailing whitespace from string.</p>
+</li><li>
+<p><code>base64</code>: Base64-encode value.</p>
+</li><li>
+<p><code>hash</code>: Hash value.  Requires hash algorithm parameter (ex:
+“sha1”, “md5”, etc).</p>
+</li></ul>
+
+<p>You can add your own global filters, like so:</p>
+
+<pre class="ruby"><span class="ruby-comment"># create custom global filter named &#39;foobarify&#39;</span>
+<span class="ruby-constant">Luigi</span><span class="ruby-operator">::</span><span class="ruby-constant">FILTERS</span>[<span class="ruby-value">:foobarify</span>] = <span class="ruby-identifier">proc</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">s</span><span class="ruby-operator">|</span> <span class="ruby-node">&quot;foo-#{s}-bar&quot;</span> }
+
+<span class="ruby-comment"># create template which uses custom &quot;foobarify&quot; filter</span>
+<span class="ruby-identifier">tmpl</span> = <span class="ruby-constant">Luigi</span><span class="ruby-operator">::</span><span class="ruby-constant">Template</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;hello %{name | foobarify}&#39;</span>)
+
+<span class="ruby-comment"># run template and print result</span>
+<span class="ruby-identifier">puts</span> <span class="ruby-identifier">tmpl</span>.<span class="ruby-identifier">run</span>({
+  <span class="ruby-value">name:</span> <span class="ruby-string">&#39;Paul&#39;</span>
+})
+
+<span class="ruby-comment"># prints &quot;hello foo-Paul-bar&quot;</span>
+</pre>
+
+<h2 id="label-License">License<span><a href="#label-License">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>Copyright 2007-2018 Paul Duncan (<a
+href="mailto:pabs@pablotron.org">pabs@pablotron.org</a>)</p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the “Software”),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.</p>
+</main>
+
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="https://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="https://ruby.github.io/rdoc/">RDoc</a> 6.0.1.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+
